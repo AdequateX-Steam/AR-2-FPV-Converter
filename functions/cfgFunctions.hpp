@@ -1,0 +1,20 @@
+class Exp {
+	tag = "Exp";
+	class functions {
+			file = "\fpvConverter\functions";
+			class player_Init{
+				postInit = 1;
+			};
+			class drone_Init{};
+			class droneCfg{};
+			class droneConverter{};
+			class showMunitions{};
+			class finalStage{};
+			class rearmDrone{};
+			class attachPoint{};
+			class blackList{};
+			class showHUD{};
+			class removeHud{};
+
+	};
+};
