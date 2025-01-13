@@ -1,8 +1,7 @@
 /* Things to do:
 1) bug fixes
 2) re-texture drone
-3) random sounds on detonation? "playSound", "playSound3D" (phonk walk, hehe boy, surprise motherfucker, sanic, samir your crashing the car, im dying help me, click noice, metal gear alert sound, gotcha bitch) https://www.myinstants.com/en/search/?name=samir
-4) new drone engine sounds 
+3) new drone engine sounds 
  */
 class CfgPatches
 {
