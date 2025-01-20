@@ -6,7 +6,7 @@ params [["_droneObject", nil, [objNull]]];
 // performance new code:0.63-0.64ms, old code:0.8051-0.81
 createDialog "munition_Selector";
 waitUntil {!isNull (findDisplay 1115)};
-findDisplay 1115 setVariable ["ExP_droneOBJ", _droneObject];
+(findDisplay 1115) setVariable ["ExP_droneOBJ", _droneObject];
 _ctrl = (findDisplay 1115) displayCtrl 1500; // listbox
 _ctrlCB = (findDisplay 1115) displayCtrl 2800; // checkbox
 lbClear _ctrl;
@@ -185,7 +185,7 @@ findDisplay 1115 displayCtrl 1600 ctrlAddEventHandler ["ButtonClick",
 				_Ammo = getText(configFile >> "CfgMagazines" >>  _filteredWHead >> "ammo");
 				_droneX = (findDisplay 1115 getVariable "ExP_droneOBJ");
 				[_Ammo, _droneX, _dropCheck] call Exp_fnc_finalStage;
-				_magazineType = [_filteredWHead, aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ_0123456789 ] call BIS_fnc_filterString; //might be un-needed
+				_magazineType = [_filteredWHead, aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ_0123456789 ] call BIS_fnc_filterString; //might be un-needed				
 				_droneX setVariable ["ExpMagazine", _magazineType];
 				if (_magazineType isKindOf ["1Rnd_HE_Grenade_shell", configFile >> "CfgMagazines"]) then {hint "Underbarrel grenades must be used above 20 Meters!! (arming distance)"};
 				player removeMagazine _filteredWHead;

@@ -120,7 +120,7 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 		{	
 			params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_gunner"];
 			_magazineType = (_unit getVariable "ExpMagazine");
-			
+			_mass = ((getNumber(configFile >> "CfgMagazines" >> _magazineType >> "mass")) / 10);
 			if ("fpvGrenade" == (typeOf ((attachedObjects _unit) select 0))) then 
 			{
 				
@@ -132,7 +132,7 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 					_newPOS = (getPosATL _unit);
 					_newPOS set [2, ((_newPOS select 2) - 0.30)];
 					_droppable = createVehicle [_replacement, _newPOS, [], 0, "CAN_COLLIDE"];
-					_droppable disableCollisionWith _unit;
+					//_droppable disableCollisionWith _unit;
 					deleteVehicle _fakeGrenade;
 					
 					[_droppable, _magazineType] spawn 
@@ -145,7 +145,7 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 						_zVelocity = 0; //m/s
 						_dragForce = 0; // newtons
 						_csArea = ((sizeOf (typeOf _bomb))); //sqMeters
-						_mass = ((getNumber(configFile >> "CfgMagazines" >> _magazineType >> "mass")) / 10); //Kilogram-ish
+						_mass = ((getNumber(configFile >> "CfgMagazines" >> (_this select 1) >> "mass")) / 10); //Kilogram-ish
 						_densityAir = 1.293; //km-m3
 						_DragCoef = 1.1;
 						_gForce = 0; //newtons
@@ -157,12 +157,12 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 							_dTime = _curTime;
 							_curTime = Time - _startTime;
 							_dTime = _curTime - _dTime; 
-							_dragForce = 0.5 * _densityAir * ((- _zVelocity) ^ 2) * _DragCoef * _csArea;
+							_dragForce = (0.5 * _densityAir * ((- _zVelocity) ^ 2) * _DragCoef * _csArea);
 							_gForce = _mass * _gAccel;
 							_changeAccel = (_gForce + _dragForce) / _mass;
 							_zVelocity = (_zVelocity + (_changeAccel * _curTime)) *_dTime;		
 							_bomb setVelocity [0, 0, (_zVelocity / _dTime)];
-							//hint str [_zVelocity, "\n" , (_zVelocity / _dTime), "\n", ((getPosATL _bomb) select 2), "\n", _curTime, "\n", _dTime, "\n", _dragForce, "\n", _gForce, "\n", (_gForce + _dragForce), "\n", _csArea];	
+							//hint str [(_this select 0), "\n" ,(_this select 1),_zVelocity, "\n" , (_zVelocity / _dTime), "\n", ((getPosATL _bomb) select 2), "\n", _curTime, "\n", _dTime, "\n", _dragForce, "\n", _gForce, "\n", (_gForce + _dragForce), "\n", _csArea];	
 						};			
 					};					
 				}
@@ -183,7 +183,7 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 			{
 				
 				_droppable = ((attachedObjects _unit) select 0);
-				_droppable disableCollisionWith _unit;
+				//_droppable disableCollisionWith _unit;
 				detach _droppable;
 				_droneClassX = ((([] call Exp_fnc_droneCfg) select [0,1]) + "_FPV_AR2");
 				_droneArrayX = [_unit, _droneClassX];
@@ -193,7 +193,7 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 				{  
 					_bomb = _this select 0; 	
 					_descend = getPosATL _bomb;
-					_Z = (_descend select 2); 
+					_Z = ((_descend select 2) - 0.5); 
 					_gAccel = -9.81; // (m/s)2
 					_startTime = Time;
 					_curTime = 0;
@@ -201,7 +201,7 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 					_velocity = 0; //m/s
 					_dragForce = 0; // newtons
 					_csArea = ((sizeOf (typeOf _bomb)) * 2); //sqMeters
-					_mass = ((getNumber(configFile >> "CfgMagazines" >> _magazineType >> "mass")) / 10); //Kilogram-ish
+					_mass = ((getNumber(configFile >> "CfgMagazines" >> (_this select 1) >> "mass")) / 10); //Kilogram-ish
 					_densityAir = 1.293; //km-m3
 					_DragCoef = 1.8;
 					_gForce = 0; //newtons
@@ -220,7 +220,7 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 						_Z = (_Z + _velocity);
 						if (_Z <= 0.10) then {_Z = 0.1};
 						_bomb setPos [(_descend select 0), (_descend select 1), (_Z)];
-						//hint str [_Z, "\n" , (_velocity / _dTime), "\n", _curTime, "\n", _dTime, "\n", _dragForce, "\n", _gForce, "\n", (_gForce + _dragForce), "\n", _csArea];
+						//hint str [(_this select 0), "\n" ,(_this select 1), "\n" ,_Z, "\n" , (_velocity / _dTime), "\n", _curTime, "\n", _dTime, "\n", _dragForce, "\n", _gForce, "\n", (_gForce + _dragForce), "\n", _csArea];
 					};			
 					triggerAmmo _bomb; 
 				};		

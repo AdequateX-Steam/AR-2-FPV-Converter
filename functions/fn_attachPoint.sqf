@@ -56,3 +56,6 @@ if (_posArray isEqualto [0,0,0]) then {_posArray = [_warheadType] call Exp_fnc_m
 // {detach _x; triggerAmmo _x}foreach attachedObjects cursorObject;_ammo = "M_Titan_AT" createvehicle getposATL cursorObject; _ammo attachto [cursorObject, [0,-.35,-0.17]];
 //{_x getvariable "altWarhead"}foreach attachedobjects cursorObject
 //_droppable = createVehicle ["rhsusf_40mm_HEDP",cursorObject, [], 0, "CAN_COLLIDE"]; _droppable setVelocity [0, 0, -8.829];   rhsusf_m1165a1_gmv_mk19_m240_socom_d
+
+
+// hint (cursorObject getvariable "ExpMagazine")
