@@ -15,6 +15,6 @@ class Exp {
 			class blackList{};
 			class showHUD{};
 			class removeHud{};
-
+			class automation{};
 	};
 };

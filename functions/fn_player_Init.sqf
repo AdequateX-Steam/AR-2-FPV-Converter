@@ -7,10 +7,8 @@ if (hasInterface) then  //Run on all players + SP host
 				params ["_unit", "_staticWeapon", "_primaryBag", "_secondaryBag"];
 				if (_staticWeapon isKindOf "UAV_01_base_F") then 
 				{
-					player setVariable ["ExpState", true];
 					removeAllActions _staticWeapon;
-					_droneClassName = [] call Exp_fnc_droneCfg;
-					[_droneClassName, _staticWeapon] spawn Exp_fnc_droneConverter;
+					[_staticWeapon] spawn Exp_fnc_droneConverter;
 				};
 			}];
 						
@@ -23,7 +21,7 @@ if (hasInterface) then  //Run on all players + SP host
 			Player addEventHandler ["Killed", 
 			{
 				params ["_unit", "_killer", "_instigator", "_useEffects"];
-				isNil {[] spawn Exp_fnc_removeHud};
+				isNil {[] spawn Exp_fnc_removeHud};  //either spawn only, or isnil call code for unscheduled environment
 			}];
 			
 			[] spawn Exp_fnc_showHUD;

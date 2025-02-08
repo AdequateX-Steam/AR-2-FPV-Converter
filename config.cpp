@@ -1,9 +1,11 @@
 /* Things to do:
 1) bug fixes
-2) re-texture drone
-3) random sounds on detonation? "playSound", "playSound3D" (phonk walk, hehe boy, surprise motherfucker, sanic, samir your crashing the car, im dying help me, click noice, metal gear alert sound, gotcha bitch) https://www.myinstants.com/en/search/?name=samir
-4) new drone engine sounds
-5) removed deprecated code (expState)
+2) random sounds on detonation? "playSound", "playSound3D" (phonk walk, hehe boy, surprise motherfucker, sanic, samir your crashing the car, im dying help me, click noice, metal gear alert sound, gotcha bitch) https://www.myinstants.com/en/search/?name=samir
+3) new drone engine sounds
+4) removed deprecated code
+5) laser pointer from RPG warhead to indicate impact point? drawLine3D, oneachframe, getposATL droneobject, eyepos, weapondirection, ASLToAGL, weaponsturret, currentweapon, getcameraviewdirection
+6)onEachFrame { drawLine3D [ASLToAGL eyePos player, cursorObject, [1,0,0,1], 5];};
+7) have drone return to player if target not found, and remove eventhandlers.
  */
 class CfgPatches
 {
@@ -63,7 +65,7 @@ class CfgAmmo {
 	triggerOnImpact = 0;
 	};
 	class fpvGrenade : Grenade {
-		explosionTime = -1;
+		explosionTime = -1; // -1
 		explosive = 0;
 		explosionAngle = 0;
 		explosionDir = "";
@@ -87,7 +89,7 @@ class CfgAmmo {
 		hit = 0;
 		indirectHitRange = 0;
 		indirectHit = 0;
-		timeToLive = 1800; //30 minutes auto delete
+		timeToLive = 1800; //30 minutes auto delete (1800)
 		thrustTime = 0;
 		thrust = 0;
 	};
@@ -141,7 +143,7 @@ class CfgVehicles {
 	{
 		features = "Randomization: No						<br />Camo selections: 1 - the whole body						<br />Script door sources: None						<br />Script animations: None						<br />Executed scripts: None						<br />Firing from vehicles: No						<br />Slingload: No						<br />Cargo proxy indexes: None";
 		author = "AdequateX";
-		mapSize = 4;
+		mapSize = 15; //10
 		class SpeechVariants
 		{
 			class Default
@@ -185,10 +187,10 @@ class CfgVehicles {
 		accuracy = 0.6;
 		camouflage = 0.20;
 		audible = 0.1;
-		armor = 0.5;
+		armor = 2; //0.5
 		cost = 2; /////20000
-		altFullForce = 1250;
-		altNoForce = 2000;
+		altFullForce = 1250; 
+		altNoForce = 2000;	
 		LODTurnedIn = -1;
 		LODTurnedOut = -1;
 		epeImpulseDamageCoef = 5;
@@ -198,21 +200,22 @@ class CfgVehicles {
 		icon = "\A3\Drones_F\Air_F_Gamma\UAV_01\Data\UI\Map_UAV_01_CA.paa"; //"\A3\Drones_F\Air_F_Gamma\UAV_01\Data\UI\Map_UAV_01_CA.paa" //controls the map icon of the unit
 		picture = "\A3\Drones_F\Air_F_Gamma\UAV_01\Data\UI\UAV_01_CA.paa";
 		class Reflectors{};
-		startDuration = 1.00;
-		maxSpeed = 150;
-		precision = 15;
+		startDuration = 0.5; //1.00
+		maxSpeed = 160;
+		precision = 10; //waypoint complete radius precision?
 		steerAheadSimul = 0.5;
 		steerAheadPlan = 0.7;
 		predictTurnPlan = 2.0;
 		predictTurnSimul = 1.5;
-		liftForceCoef = 1.10; ////////////////////////////////// 1.00
-		cyclicAsideForceCoef = 2.25; //////2.0
-		cyclicForwardForceCoef = 1.0; ///1.2
-		bodyFrictionCoef = 0.25; /////0.3
-		backRotorForceCoef = 5.0;
+		liftForceCoef = 1.5; ////////////////////////////////// 1.00 (default) -> 1.10
+		cyclicAsideForceCoef = 1.675; ///////////2.0 (default) -> 2.25
+		cyclicForwardForceCoef = 0.675; //////////1.2 (default) -> 1.0
+		bodyFrictionCoef = 0.25; //////////0.3 (default) -> 0.25
+		backRotorForceCoef = 4.0; /////////5.0 (default) -> 4.0
 		fuelCapacity = 15; ///////////////////////////////////
 		maxFordingDepth = 0.3;
 		threat[] = {0.04,0.1,0.05};
+		envelope[] = {0,0.4,1.3,2.5,2.9,3.7,3.9,4.0,4.1,4.2,4.2,3,0.9,0.7,0.5};   ////TEST/////////relative to maxspeed in increments of 10% -> 140%{0.1, 0.2, 0.3 ... 1.2, 1.3, 1.4}, stock ar-2 envelope[] = {0,0.2,0.9,2.1,2.5,3.3,3.5,3.6,3.7,3.8,3.8,3,0.9,0.7,0.5};
 		maxMainRotorDive = 0;
 		minMainRotorDive = 0;
 		neutralMainRotorDive = 0;
@@ -276,7 +279,7 @@ class CfgVehicles {
 			visionMode[] = {"Normal","NVG","Ti"};
 			thermalMode[] = {0,1};
 		};
-		class MFD{};
+		class MFD{}; //MULTI-FUNCTION DISPLAY
 		enableManualFire = 1;
 		receiveRemoteTargets = true; ////
 		reportRemoteTargets = 1;
@@ -290,7 +293,7 @@ class CfgVehicles {
 					class ManSensorComponent: SensorTemplateMan
 					{
 						maxTrackableSpeed = 25;
-						angleRangeHorizontal = 65; //60
+						angleRangeHorizontal = 75; //60
 						angleRangeVertical = 60; //45
 						animDirection = "mainGun";
 						aimDown = -55.5; //-0.5
@@ -312,7 +315,7 @@ class CfgVehicles {
 							viewDistanceLimitCoef = 1;
 						};
 						maxTrackableSpeed = 35; ////////////
-						angleRangeHorizontal = 65; //60
+						angleRangeHorizontal = 75; //60
 						angleRangeVertical = 60; //45
 						animDirection = "mainGun";
 						aimDown = -5.5; // -0.5
@@ -610,7 +613,7 @@ class CfgVehicles {
 		picture = "\A3\Drones_F\Weapons_F_Gamma\Ammoboxes\Bags\Data\UI\icon_B_C_UAV_rgr_ca";
 		hiddenSelectionsTextures[] = {"\A3\Drones_F\Weapons_F_Gamma\Ammoboxes\Bags\Data\UAV_backpack_rgr_co.paa"};
 		maximumLoad = 0;
-		mass = 300;
+		mass = 63;
 		class assembleInfo: assembleInfo
 		{
 			base = "";

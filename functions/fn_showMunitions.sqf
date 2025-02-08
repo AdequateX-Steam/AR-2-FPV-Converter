@@ -85,9 +85,7 @@ findDisplay 1115 setVariable ["ExP_dropModeList", _dropModeDislayList]; // a lis
 	if ((_this select 1) == 1) then 
 	{
 		_droneObjectX = (findDisplay 1115 getVariable "ExP_droneOBJ");
-		_droneClassX = ((([] call Exp_fnc_droneCfg) select [0,1]) + "_FPV_AR2");
-		_droneArrayX = [_droneObjectX, _droneClassX];
-		[_droneArrayX] spawn Exp_fnc_rearmDrone;
+		[_droneObjectX] spawn Exp_fnc_rearmDrone;
 		closeDialog 0;
 	};
 }];
@@ -189,12 +187,13 @@ findDisplay 1115 displayCtrl 1600 ctrlAddEventHandler ["ButtonClick",
 				_droneX setVariable ["ExpMagazine", _magazineType];
 				if (_magazineType isKindOf ["1Rnd_HE_Grenade_shell", configFile >> "CfgMagazines"]) then {hint "Underbarrel grenades must be used above 20 Meters!! (arming distance)"};
 				player removeMagazine _filteredWHead;
+				player connectTerminalToUAV _droneX;
 				closeDialog 1;
 			};
 		}
 		else 
 		{
-			hint "Invalid selection! -> click on an appropriate explosive";
+			hint "Invalid selection! -> Click on an appropriate explosive";
 		};
 	}];
 		
@@ -203,9 +202,7 @@ findDisplay 1115 displayCtrl 1601 ctrlAddEventHandler ["ButtonClick",
 	{
 		params ["_control"];
 		_droneObjectX = (findDisplay 1115 getVariable "ExP_droneOBJ");
-		_droneClassX = ((([] call Exp_fnc_droneCfg) select [0,1]) + "_FPV_AR2");
-		_droneArrayX = [_droneObjectX, _droneClassX];
-		[_droneArrayX] spawn Exp_fnc_rearmDrone;
+		[_droneObjectX] spawn Exp_fnc_rearmDrone;
 		closeDialog 0;
 	}];	
 

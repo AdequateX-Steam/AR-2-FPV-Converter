@@ -6,7 +6,7 @@ class munition_Selector
 	class controls
 	{
 		////////////////////////////////////////////////////////
-		// GUI EDITOR OUTPUT START (by Adequate, v1.063, #Nyzycy)
+		// GUI EDITOR OUTPUT START (by AdequateX, v1.063, #Nyzycy)
 		////////////////////////////////////////////////////////
 
 		class munitions_pictureBackground: RscPicture
@@ -18,6 +18,22 @@ class munition_Selector
 			w = 0.340312 * safezoneW;
 			h = 0.418 * safezoneH;
 			colorBackground[] = {0,0,0,0.35};
+		};
+		class munitions_pictoreBorder : RscPicture 
+		{
+			type = 0;
+			idc = 1210;
+			x = 0.324687 * safezoneW + safezoneX;//
+			y = 0.2805 * safezoneH + safezoneY;//
+			w = 0.34125 * safezoneW; //
+			h = 0.4305 * safezoneH;  //
+			style = 64;
+			colorBackground[] = {0,0,0,1};
+			colorText[] = {0.10, 0.85, 0.10, 1};
+			text = "Explosives";
+			font = "PuristaBold";
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1);
+			shadow = 2;		
 		};
 		class munitions_confirmButton: RscButton
 		{
@@ -102,22 +118,24 @@ class munition_Selector
 		{
 			idc = 1100;
 			x = 0.401 * safezoneW + safezoneX;
-			y = 0.30 * safezoneH + safezoneY;
+			y = 0.3 * safezoneH + safezoneY; //0.30
 			w = 0.125 * safezoneW;
 			h = 0.0225 * safezoneH;
 			style = 2;
 			font = "PuristaLight";
-			text = "Maximum payload weight %";
+			text = "Maximum payload weight %:";
 			colorBackground[] = {0.2,0.2,0.2,1};
 			colorText[] = {0.4,0.502,0.902,1};
 			shadow = 1;		
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 0.75);
+
 		};
 		
 		class munitions_warheadPicture: RscPicture
 		{
 			idc = 1201;
 			x = 0.3970 * safezoneW + safezoneX;
-			y = 0.375 * safezoneH + safezoneY;
+			y = 0.40 * safezoneH + safezoneY; //0.375
 			w = 0.134 * safezoneW;
 			h = 0.2 * safezoneH;
 			text = "";		

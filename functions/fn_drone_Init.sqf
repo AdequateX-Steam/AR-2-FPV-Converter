@@ -10,14 +10,14 @@ _initAction = _droneObject addAction ["<t color='#1c3f45'>Arm Drone</t>",
 		[_target] call Exp_fnc_showMunitions;     
     }, nil, 6, true, true, "", "(((damage _target) != 1) && ((side _target) == (side player)) && (cameraOn == player))", 2, false]; 
 
-_droneObject setVariable ["ExpInitAction", _initAction]; //probably dont need this here or above^^
+_droneObject setVariable ["ExpInitAction", _initAction];
 
 _droneObject addEventHandler ["Disassembled" ,
 {	
 	params ["_entity", "_primaryBag", "_secondaryBag", "_unit"];
 	removeAllActions _entity;
 	_entity removeMagazines "FakeMagazine";
-	if (count attachedObjects player >= 1) then 
+	if (count attachedObjects _entity >= 1) then 
 	{
 		_magazineType = (_entity getVariable "ExpMagazine");
 		if (_magazineType != "") then 
