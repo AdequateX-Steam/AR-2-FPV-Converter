@@ -2,7 +2,6 @@ class munition_Selector
 {
 	idd = 1115;
 	movingEnabled = false;
-	//onKeyDown = "(_this select 1) == 1";
 	class controls
 	{
 		////////////////////////////////////////////////////////
@@ -19,7 +18,7 @@ class munition_Selector
 			h = 0.418 * safezoneH;
 			colorBackground[] = {0,0,0,0.35};
 		};
-		class munitions_pictoreBorder : RscPicture 
+		class munitions_pictureBorder : RscPicture 
 		{
 			type = 0;
 			idc = 1210;
@@ -38,7 +37,7 @@ class munition_Selector
 		class munitions_confirmButton: RscButton
 		{
 			idc = 1600;
-			text = "Confirm"; //--- ToDo: Localize;
+			text = "Confirm"; 
 			x = 0.335 * safezoneW + safezoneX;
 			y = 0.313 * safezoneH + safezoneY;
 			w = 0.04125 * safezoneW;
@@ -90,7 +89,7 @@ class munition_Selector
 			y = 0.643 * safezoneH + safezoneY;
 			w = 0.0257812 * safezoneW;
 			h = 0.044 * safezoneH;
-			tooltip = "Drone will drop the explosive instead of manual detonation"; //--- ToDo: Localize;
+			tooltip = "Drone will drop the explosive instead of manual detonation";
 			color[] = {1,1,1,1};
 			colorHover[] = {0,0.8,0.8,1};
 			colorBackground[] = {0,0,0,0.7};
@@ -146,6 +145,163 @@ class munition_Selector
 
 	};
 };
+
+// Target override 
+class target_Override
+{
+	idd = 1116;
+	movingEnabled = false;
+	class ControlsBackground
+	{
+			
+		class background : RscPicture 
+		{
+			idc = -1;
+			x = 0.324687 * safezoneW + safezoneX;;
+			y = 0.291 * safezoneH + safezoneY;;
+			w = 0.340312 * safezoneW;;
+			h = 0.418 * safezoneH;;
+			style = 0;
+			text = "";
+			colorBackground[] = {0.6,0.6,0.6,0.7};
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1);
+			
+		};
+		
+		class munitions_pictureBorder : RscPicture 
+		{
+			type = -1;
+			idc = 1210;
+			x = 0.324687 * safezoneW + safezoneX;//
+			y = 0.2805 * safezoneH + safezoneY;//
+			w = 0.34125 * safezoneW; //
+			h = 0.4305 * safezoneH;  //
+			style = 64;
+			colorBackground[] = {0,0,0,1};
+			colorText[] = {0.85, 0.10, 0.10, 1};
+			text = "Target type override";
+			font = "PuristaBold";
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1);
+			shadow = 2;		
+		};
+		
+	};
+	class Controls
+	{
+		class targetType : RscListBox 
+		{
+			type = 5;
+			idc = 1100;
+			x = safeZoneX + safeZoneW * 0.33854167;
+			y = safeZoneY + safeZoneH * 0.42222223;
+			w = safeZoneW * 0.3125;
+			h = safeZoneH * 0.15555556;
+			colorBackground[] = {0.2,0.2,0.2,1};
+			colorDisabled[] = {0.2,0.2,0.2,1};
+			colorSelect[] = {1,0,0,1};
+			colorText[] = {0.902,0.902,0.902,1};
+			font = "TahomaB";
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1.6);
+			soundSelect[] = {"\A3\ui_f\data\sound\RscListbox\soundSelect",0.09,1.0};
+			blinkingPeriod = 0;
+			colorSelect2[] = {1,0,0,1};
+			colorSelectBackground[] = {0.2,0.302,0.702,1};
+			colorSelectBackground2[] = {0.4,0.4,0.519,1};
+			onMouseButtonClick = "";
+			period = 1;
+			shadow = 1;
+			tooltipColorBox[] = {0.4,0.4,0.4,1};
+			tooltipColorText[] = {1,0.5,0,1};
+			class Items
+			{
+				class Man
+				{
+					text = "Soldiers / Infrantry";
+					tooltip = "Default: (Tanks / IFVs)";
+					picture = "\A3\ui_f\data\map\vehicleicons\iconManAT_ca.paa";
+					//pictureRight = "\a3\Ui_f\data\Map\Markers\Military\unknown_CA.paa";
+/* 					color[] = {1,0,1,1};
+					colorRight[] = {1,1,0,1};
+					colorPicture[] = {0,1,1,1};
+					colorPictureSelected[] = {1,0,0,1};
+					colorPictureDisabled[] = {0,0,0,1};
+					colorPictureRight[] = {0,1,0,1};
+					colorPictureRightSelected[] = {0,0,1,1};
+					colorPictureRightDisabled[] = {0,0,0,1}; */
+					data = "Man";
+					value = 0;
+					default = 0;
+				};
+				class Truck
+				{
+					text = "Trucks / Cars / MRAPs";
+					tooltip = "Default: (Tanks / IFVs)";
+					picture = "\A3\Soft_F\MRAP_01\Data\UI\MRAP_01_hmg_F_ca.paa";
+					//pictureRight = "\a3\Ui_f\data\Map\Markers\Military\unknown_CA.paa";
+					data = "CAR";
+					value = 1;
+					default = 1;
+				};
+				class Apc
+				{
+					text = "Wheeled APCs";
+					tooltip = "Default: (Tanks / IFVs)";
+					picture = "\A3\Armor_F_Beta\APC_Wheeled_02\Data\UI\APC_Wheeled_02_RCWS_CA.paa";
+					data = "Wheeled_APC_F";
+					value = 2;
+					default = 2;
+				};
+				class Tank
+				{
+					text = "Tanks / IFVs";
+					tooltip = "Default: (Tanks / IFVs)";
+					picture = "\A3\armor_f_gamma\MBT_01\Data\UI\Slammer_M2A1_Base_ca.paa";
+					data = "Tank";
+					value = 3;
+					default = 3;
+				};
+			};	
+		};
+		class confirmButton: RscButton
+		{
+			idc = 1101;
+			text = "Confirm"; 
+			x = 0.335 * safezoneW + safezoneX;
+			y = 0.313 * safezoneH + safezoneY;
+			w = 0.04125 * safezoneW;
+			h = 0.055 * safezoneH;
+			style = 2; 
+			font = "PuristaLight";
+			tooltip = "";
+			colorBackground[] = {0.41,0.89,0.41,1};
+			colorBackgroundActive[] = {0,1,0,1};
+			colorText[] = {0,0,0,1};
+			colorFocused[] = {0,1,0,1};		
+		};
+		
+		class CancelButton: RscButton
+		{
+			idc = 1102;
+			text = "Cancel"; 
+			x = 0.335 * safezoneW + safezoneX;
+			y = 0.632 * safezoneH + safezoneY;
+			w = 0.04125 * safezoneW;
+			h = 0.055 * safezoneH;
+			style = 2; 
+			font = "PuristaLight";
+			tooltip = "";
+			colorBackground[] = {0.89,0.41,0.41,1};
+			colorBackgroundActive[] = {1,0,0,1};
+			colorText[] = {0,0,0,1};
+			colorFocused[] = {1,0,0,1};			
+		};
+
+		
+	};
+	
+};
+
+
 //custom hud Here, no different than GUI^^ but with updating elements.
 class RscTitles
 {

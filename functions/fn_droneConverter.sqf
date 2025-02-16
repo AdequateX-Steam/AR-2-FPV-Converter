@@ -6,7 +6,7 @@ _droneObject = _this select 0;
 	"<t color='#FFF444'>Convert to FPV drone</t>", 
 	"\a3\ui_f_oldman\data\IGUI\Cfg\holdactions\repair_ca.paa", //idleIcon
 	"\a3\ui_f_oldman\data\IGUI\Cfg\holdactions\repair_ca.paa", //progressIcon
-	"(((damage _target) != 1) && ((side _target) == (side player)) && (cameraOn == _this))", //conditionShow
+	"(((damage _target) != 1) && ((side _target) == (side player)) && (cameraOn == _this) && ((_this distance2D _target) <= 3))", //conditionShow
 	"((damage _target) != 1)", //conditionProgress
 	{	//codeStart
 		params ["_target", "_caller", "_actionId", "_arguments"];

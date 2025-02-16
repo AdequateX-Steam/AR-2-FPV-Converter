@@ -5,7 +5,6 @@
 4) removed deprecated code
 5) laser pointer from RPG warhead to indicate impact point? drawLine3D, oneachframe, getposATL droneobject, eyepos, weapondirection, ASLToAGL, weaponsturret, currentweapon, getcameraviewdirection
 6)onEachFrame { drawLine3D [ASLToAGL eyePos player, cursorObject, [1,0,0,1], 5];};
-7) have drone return to player if target not found, and remove eventhandlers.
  */
 class CfgPatches
 {
@@ -184,11 +183,11 @@ class CfgVehicles {
 		washDownDiameter = "10.0f";
 		washDownStrength = "0.25f";
 		killFriendlyExpCoef = 0.1;
-		accuracy = 0.6;
+		accuracy = 2.5;
 		camouflage = 0.20;
 		audible = 0.1;
 		armor = 2; //0.5
-		cost = 2; /////20000
+		cost = 200; /////20000
 		altFullForce = 1250; 
 		altNoForce = 2000;	
 		LODTurnedIn = -1;

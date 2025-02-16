@@ -77,7 +77,6 @@ if (_dropped == false) then
 				[] spawn Exp_fnc_removeHud;
 				_unit removeAllEventHandlers "Fired";
 				_unit removeAllEventHandlers "Hit";
-				{deleteMarker _x;} foreach (_unit getVariable "ExpDroneMarkers"); //from Exp_fnc_automation
 			};
 		}];
 		
@@ -105,7 +104,6 @@ if (_dropped == false) then
 			[] spawn Exp_fnc_removeHud;
 			_unit removeAllEventHandlers "Fired";
 			_unit removeAllEventHandlers "Hit";
-			{deleteMarker _x;} foreach (_unit getVariable "ExpDroneMarkers"); //from Exp_fnc_automation
 		}];
 }
 else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
