@@ -34,6 +34,7 @@ _droneObject addEventHandler ["Disassembled" ,
 	
 	_entity removeAllEventHandlers "Hit";
 	_entity removeAllEventHandlers "Fired";
+	_entity removeAllEventHandlers "Killed";
 	_entity removeAllEventHandlers "Disassembled";
 	_entity setVariable ["ExpMagazine", ""];
 }];

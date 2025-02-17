@@ -52,8 +52,8 @@ if (_dropped == false) then
 {
 	_droneObject addEventHandler ["Hit", 
 		{	
-			params ["_unit", "_source", "_damage", "_instigator"]; //(damage 0.35 testing for automation)
-			if (_damage > .35) then 
+			params ["_unit", "_source", "_damage", "_instigator"]; 
+			if (_damage > 0.310) then //used to be 0.35
 			{
 				{					
 					if ("fpvAmmo" == (typeOf _x)) then 
@@ -77,7 +77,37 @@ if (_dropped == false) then
 				[] spawn Exp_fnc_removeHud;
 				_unit removeAllEventHandlers "Fired";
 				_unit removeAllEventHandlers "Hit";
+				_unit removeAllEventHandlers "Killed";
 			};
+		}];
+		
+		_droneObject addEventHandler ["Killed", 
+		{	
+			params ["_unit", "_killer", "_instigator", "_useEffects"]; 
+				{					
+					if ("fpvAmmo" == (typeOf _x)) then 
+					{
+						_replacement = _x getVariable "altWarhead";
+						_ModelPosition = _x worldToModel (getPosATL _unit);
+						deleteVehicle _x;
+						_WorldPos =  _unit modelToWorld _ModelPosition;
+						_newWarhead = _replacement createVehicle (_WorldPos);
+						_newWarhead setVectorDirAndUp [vectorDir _unit, vectorUp _unit];
+						triggerAmmo _newWarhead; 
+
+
+					}							
+					else 
+					{
+						triggerAmmo _x;
+					}; 
+								
+				} forEach attachedObjects _unit;
+				[] spawn Exp_fnc_removeHud;
+				_unit removeAllEventHandlers "Fired";
+				_unit removeAllEventHandlers "Hit";
+				_unit removeAllEventHandlers "Killed";
+			
 		}];
 		
 	_droneObject addEventHandler ["Fired",					
@@ -104,6 +134,7 @@ if (_dropped == false) then
 			[] spawn Exp_fnc_removeHud;
 			_unit removeAllEventHandlers "Fired";
 			_unit removeAllEventHandlers "Hit";
+			_unit removeAllEventHandlers "Killed";
 		}];
 }
 else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
@@ -112,7 +143,7 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 		{				
 			params ["_unit", "_source", "_damage", "_instigator"];
 			
-			if (_damage > .35) then 
+			if (_damage > 0.310) then  //used to be 0.35
 				{
 					{
 						triggerAmmo _x;
@@ -120,8 +151,40 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 					[] spawn Exp_fnc_removeHud;
 					_unit removeAllEventHandlers "Fired";
 					_unit removeAllEventHandlers "Hit";
+					_unit removeAllEventHandlers "Killed";
 				}
 		}];
+		
+	_droneObject addEventHandler ["Killed", 
+	{	
+		params ["_unit", "_killer", "_instigator", "_useEffects"]; 
+			{					
+				if ("fpvAmmo" == (typeOf _x)) then 
+				{
+					_replacement = _x getVariable "altWarhead";
+					_ModelPosition = _x worldToModel (getPosATL _unit);
+					deleteVehicle _x;
+					_WorldPos =  _unit modelToWorld _ModelPosition;
+					_newWarhead = _replacement createVehicle (_WorldPos);
+					_newWarhead setVectorDirAndUp [vectorDir _unit, vectorUp _unit];
+					triggerAmmo _newWarhead; 
+
+
+				}							
+				else 
+				{
+					triggerAmmo _x;
+				}; 
+							
+			} forEach attachedObjects _unit;
+			[] spawn Exp_fnc_removeHud;
+			_unit removeAllEventHandlers "Fired";
+			_unit removeAllEventHandlers "Hit";
+			_unit removeAllEventHandlers "Killed";
+		
+	}];	
+			
+		
 	_droneObject addEventHandler ["Fired",					
 		{		
 			params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_gunner"];
@@ -229,6 +292,7 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 			};
 				_unit removeAllEventHandlers "Fired";
 				_unit removeAllEventHandlers "Hit";
+				_unit removeAllEventHandlers "Killed";
 		}];
 };
 /////////////////Automation//////////////////

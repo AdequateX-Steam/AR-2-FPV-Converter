@@ -19,7 +19,8 @@ EXP_fnc_wayPointTraversal =
 	_hostileRandomDistance = random [75,120,165]; // random distance (higher distances give AI a better chance to shoot down the drone)
 	_droneObject setCaptive true; //tricks enemies until it gets closer to the waypoint or else it usually get shot down
 	_droneObject lockDriver true;
-	_droneObject enableUAVWaypoints false; //try to disable player interference
+	{deleteWaypoint _x;} forEachReversed (waypoints (group _droneObject));
+	_droneObject enableUAVWaypoints false; //disable player interference
 	_droneMarker1 = createMarker [((str _droneObject) + "DroneSearchArea"), _pos, 1, player];
 	_droneMarker1 setMarkerShape "ELLIPSE";
 	_droneMarker1 setMarkerSize [200,200];
@@ -31,6 +32,7 @@ EXP_fnc_wayPointTraversal =
 	_droneMarker2 setMarkerColor "ColorBlack";
 	_droneMarker2 setMarkerAlpha 1;
 	_waypoint = group(_droneObject) addWaypoint [[_pos select 0,_pos select 1, 65], -1, 1];
+	group(_droneObject) setCurrentWaypoint _waypoint;
 	_droneObject flyInHeight 65;
 	group(_droneObject) setCombatMode "BLUE";
 	group(_droneObject) setCombatBehaviour "CARELESS";
@@ -180,8 +182,8 @@ Exp_fnc_targetSeek =
 	//_enemyTarget = highest value target that is the closest
 	_droneObject = _this select 0;
 	_enemyTarget = _this select 1;
-	_interceptDistance = 0.125; //Distance before intercept is considered complete
-	_interceptVelocityXYZ = [44, 44, 31]; //Top speed to accelerate to (m/s)
+	_interceptDistance = 0.6; //Distance before intercept is considered complete
+	_interceptVelocityXYZ = [50, 50, 33]; //Top speed to accelerate to (m/s)  //drones top speed is actually only around 125 km/h @ 44m/s
 	_targetCOM = getCenterOfMass _enemyTarget; //center of mass of target
 	_startTime = diag_tickTime;	//start of eachframeEH to compare against for furture time
 	
@@ -201,7 +203,16 @@ Exp_fnc_targetSeek =
 		{	
 			removeMissionEventHandler ["EachFrame", _thisEventHandler];
 			_target = [(_thisArgs select 0), (getPosATL (_thisArgs select 0))] call Exp_fnc_targetSearch;
-			[(_thisArgs select 0), _target] spawn Exp_fnc_targetSeek;		
+			
+			if ((typeName _target) == "OBJECT") then 
+			{
+				[(_thisArgs select 0), _target] spawn Exp_fnc_targetSeek;	
+			}
+			else 
+			{
+				[(_thisArgs select 0)] spawn Exp_fnc_returnToPlayer;
+			};		
+				
 		};
 			
 		////////////// HIGHER FREQUENCY TARGET POS CHECKS HERE ////////////////
@@ -242,15 +253,15 @@ Exp_fnc_targetSeek =
 			{			
 				////////////// LOWER FREQUENCY DRONE VELOCITY UPDATES HERE ////////////////
 				
-				_incVelocity = ([13.53, 13.53, 9.53] vectorMultiply (diag_tickTime - (_thisArgs select 5)));
-				if ((_incVelocity select 0) > 42) then {_incVelocity = (_thisArgs select 3);};																						
+				_incVelocity = ([15.38, 15.38, 10.15] vectorMultiply (diag_tickTime - (_thisArgs select 5)));
+				if ((_incVelocity select 0) > 44) then {_incVelocity = (_thisArgs select 3);};																						
 				_vectorDirNorm = _dronePos vectorFromTo _futureTargetPos;
 				_incVelocity = (_incVelocity vectorMultiply _vectorDirNorm);
 				_attackAngle = ((-(_incVelocity select 2)) / (vectorMagnitude _incVelocity));
 				(_thisArgs select 0) setVectorDir _vectorDirNorm;	
 				(_thisArgs select 0) setVectorUp 
 				[
-				((-cos (getDir (_thisArgs select 0) + 90)) * _attackAngle),  // if at 45degrees from both x and y, cos and sin will only be at 0.707 or -0.707 it will never reach [1,1,1] for full pitch might need another vectorMagnitude
+				((-cos (getDir (_thisArgs select 0) + 90)) * _attackAngle), 
 				((sin (getDir (_thisArgs select 0) + 90)) * _attackAngle), //* 0.715 // flattens the trajectory a bit, avoids steep angles (acceptable range from 0.5-0.825)
 				(1 - _attackAngle)
 				]; 
@@ -281,6 +292,7 @@ Exp_fnc_targetSeek =
 				[] spawn Exp_fnc_removeHud;
 				(_thisArgs select 0) removeAllEventHandlers "Fired";
 				(_thisArgs select 0) removeAllEventHandlers "Hit";
+				(_thisArgs select 0) removeAllEventHandlers "Killed";
 				removeMissionEventHandler ["EachFrame", _thisEventHandler];				
 		};
 		
@@ -297,10 +309,11 @@ Exp_fnc_returnToPlayer =
 // _droneObject = player controlled drone to be automated.
 	_droneObject = (_this select 0);
 	_pos = getPosATL player;
+	{deleteWaypoint _x;} forEachReversed (waypoints (group _droneObject));
 	hint "Drone is returning to current player's 'static' position (no target found)";
-	_waypoint = group(_droneObject) addWaypoint [[(_pos select 0), (_pos select 1), 0], -1, -1];
+	_waypoint = group(_droneObject) addWaypoint [[(_pos select 0), (_pos select 1), 0], 12, -1];
 	group(_droneObject) setCurrentWaypoint _waypoint;
-	_droneObject flyInHeight 65;
+	_droneObject flyInHeight [30, false];
 	group(_droneObject) setCombatMode "BLUE";
 	group(_droneObject) setCombatBehaviour "CARELESS";
 	_waypoint setWaypointBehaviour "CARELESS";
@@ -308,13 +321,13 @@ Exp_fnc_returnToPlayer =
 	_waypoint setWaypointSpeed "FULL";
 	_waypoint setWaypointType "MOVE";
 	_waypoint setWaypointForceBehaviour true;
-	waitUntil {sleep 1.5; ((_droneObject distance2D _pos ) <= 12)};
-	_droneObject flyInHeight [0, true];
-	waitUntil {sleep 1; ((getPosATL _droneObject) select 2) < 1};
-	hint "Drone controls unlocked";
-	_droneObject lockDriver false;
-	_droneObject engineOn false;
+	waitUntil {sleep 1; ((_droneObject distance2D _pos ) <= 32)};
+	_droneObject flyInHeight [0, false];
+	[_droneObject, false]remoteExec ["lockDriver"];
 	_droneObject enableUAVWaypoints true;
+	if (alive _droneObject) then {hint "Drone controls unlocked";};
+	waitUntil {sleep 0.66; ((getPosATL _droneObject) select 2) < 3};
+	_droneObject engineOn false;
 	_droneObject addAction ["<t color='#bf6d02'>Auto-target acquistion</t>",  
 	{ 
 		params ["_target", "_caller", "_actionId"];
