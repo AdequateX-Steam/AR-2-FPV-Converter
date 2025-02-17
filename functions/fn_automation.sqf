@@ -163,7 +163,7 @@ params
 		
 		
 		//Adjust flight height and return the found target...WORKING
-		(_droneObject) flyInHeight [0.75, true];
+		(_droneObject) flyInHeight [1, true]; //used to be 0.75
 		_foundTarget = ((_newList select _minDistanceIndex) select 4);
 		_foundTarget; //RETURN VARIABLE 
 	} 
@@ -254,7 +254,7 @@ Exp_fnc_targetSeek =
 				////////////// LOWER FREQUENCY DRONE VELOCITY UPDATES HERE ////////////////
 				
 				_incVelocity = ([15.38, 15.38, 10.15] vectorMultiply (diag_tickTime - (_thisArgs select 5)));
-				if ((_incVelocity select 0) > 44) then {_incVelocity = (_thisArgs select 3);};																						
+				if ((_incVelocity select 0) > 50) then {_incVelocity = (_thisArgs select 3);};																						
 				_vectorDirNorm = _dronePos vectorFromTo _futureTargetPos;
 				_incVelocity = (_incVelocity vectorMultiply _vectorDirNorm);
 				_attackAngle = ((-(_incVelocity select 2)) / (vectorMagnitude _incVelocity));
@@ -321,12 +321,12 @@ Exp_fnc_returnToPlayer =
 	_waypoint setWaypointSpeed "FULL";
 	_waypoint setWaypointType "MOVE";
 	_waypoint setWaypointForceBehaviour true;
-	waitUntil {sleep 1; ((_droneObject distance2D _pos ) <= 32)};
+	waitUntil {sleep 1; (((_droneObject distance2D _pos ) <= 32) || (!alive _droneObject))};
 	_droneObject flyInHeight [0, false];
 	[_droneObject, false]remoteExec ["lockDriver"];
 	_droneObject enableUAVWaypoints true;
 	if (alive _droneObject) then {hint "Drone controls unlocked";};
-	waitUntil {sleep 0.66; ((getPosATL _droneObject) select 2) < 3};
+	waitUntil {sleep 0.66; ((((getPosATL _droneObject) select 2) < 3) || (!alive _droneObject))};
 	_droneObject engineOn false;
 	_droneObject addAction ["<t color='#bf6d02'>Auto-target acquistion</t>",  
 	{ 
