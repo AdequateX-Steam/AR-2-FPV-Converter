@@ -219,15 +219,6 @@ class target_Override
 					text = "Soldiers / Infrantry";
 					tooltip = "Default: (Tanks / IFVs)";
 					picture = "\A3\ui_f\data\map\vehicleicons\iconManAT_ca.paa";
-					//pictureRight = "\a3\Ui_f\data\Map\Markers\Military\unknown_CA.paa";
-/* 					color[] = {1,0,1,1};
-					colorRight[] = {1,1,0,1};
-					colorPicture[] = {0,1,1,1};
-					colorPictureSelected[] = {1,0,0,1};
-					colorPictureDisabled[] = {0,0,0,1};
-					colorPictureRight[] = {0,1,0,1};
-					colorPictureRightSelected[] = {0,0,1,1};
-					colorPictureRightDisabled[] = {0,0,0,1}; */
 					data = "Man";
 					value = 0;
 					default = 0;
@@ -237,7 +228,6 @@ class target_Override
 					text = "Trucks / Cars / MRAPs";
 					tooltip = "Default: (Tanks / IFVs)";
 					picture = "\A3\Soft_F\MRAP_01\Data\UI\MRAP_01_hmg_F_ca.paa";
-					//pictureRight = "\a3\Ui_f\data\Map\Markers\Military\unknown_CA.paa";
 					data = "CAR";
 					value = 1;
 					default = 1;
