@@ -252,17 +252,25 @@ Exp_fnc_targetSeek =
 			if ((diag_frameNo mod 4) == 0) then 
 			{			
 				////////////// LOWER FREQUENCY DRONE VELOCITY UPDATES HERE ////////////////
-				
+				_velocityVectorDirNorm = [];
 				_incVelocity = ([15.38, 15.38, 10.15] vectorMultiply (diag_tickTime - (_thisArgs select 5)));
-				if ((_incVelocity select 0) > 50) then {_incVelocity = (_thisArgs select 3);};																						
+				if (((_incVelocity select 0) > 50) || ((_incVelocity select 1) > 50)) then {_incVelocity = (_thisArgs select 3);};																						
 				_vectorDirNorm = _dronePos vectorFromTo _futureTargetPos;
-				_incVelocity = (_incVelocity vectorMultiply _vectorDirNorm);
+				_minVector = selectMin _vectorDirNorm;
+				if (_minVector < 0) then {_minVector = -(_minVector);};
+				_maxVector = selectmax _vectorDirNorm;
+				if (_maxVector < 0) then {_maxVector = -(_maxVector);};
+				_extremeVector = _minVector max _maxVector;
+				{
+					_velocityVectorDirNorm set [_forEachIndex, (linearConversion [0, _extremeVector, _x, 0, 1])];
+				}forEach _vectorDirNorm;
+				_incVelocity = (_incVelocity vectorMultiply _velocityVectorDirNorm); //_vectorDirNorm
 				_attackAngle = ((-(_incVelocity select 2)) / (vectorMagnitude _incVelocity));
 				(_thisArgs select 0) setVectorDir _vectorDirNorm;	
 				(_thisArgs select 0) setVectorUp 
 				[
 				((-cos (getDir (_thisArgs select 0) + 90)) * _attackAngle), 
-				((sin (getDir (_thisArgs select 0) + 90)) * _attackAngle), //* 0.715 // flattens the trajectory a bit, avoids steep angles (acceptable range from 0.5-0.825)
+				((sin (getDir (_thisArgs select 0) + 90)) * _attackAngle),
 				(1 - _attackAngle)
 				]; 
 				(_thisArgs select 0) setvelocity _incVelocity;
@@ -420,12 +428,6 @@ waitUntil {sleep 0.5; isNull (findDisplay 1116)};
 findDisplay 1116 displayCtrl 1101 ctrlRemoveAllEventHandlers "ButtonClick";
 findDisplay 1116 displayCtrl 1102 ctrlRemoveAllEventHandlers "ButtonClick";
 findDisplay 1116 displayRemoveAllEventHandlers "KeyDown";
-
-
-
-//openMap [true, false];
-//hint "Select the search area (200m radius)";
-
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////

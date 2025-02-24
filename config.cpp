@@ -37,33 +37,38 @@ class RscButton;
 class RscCheckBox;
 #include "dialogs.hpp"
 
-class CfgWeapons {
-		class FakeWeapon{};
-		class fpvRocket: FakeWeapon {
-			displayName = "Activate";	
-			burst=1;
-			magazines[]={"FakeMagazine"};			
-			};
-		
+class CfgWeapons 
+{
+	class FakeWeapon{};
+	class fpvRocket: FakeWeapon 
+	{
+		displayName = "Activate";	
+		burst=1;
+		magazines[]={"FakeMagazine"};			
 	};
+		
+};
 
 
-class CfgAmmo { 
+class CfgAmmo 
+{ 
 	class M_SPG9_HEAT;
 	class Grenade;
-	class fpvAmmo : M_SPG9_HEAT {
-	timeToLive = 1800; //30 minutes auto detonate
-	effectsMissileInit = "";
-	explosive = 0;
-	hit = 0;
-	indirectHit = 0;
-	fuseDistance = 0;
-	thrust = 0;
-	thrustTime = 0;
-	submunitionAmmo = "";
-	triggerOnImpact = 0;
+	class fpvAmmo : M_SPG9_HEAT 
+	{
+		timeToLive = 1800; //30 minutes auto detonate
+		effectsMissileInit = "";
+		explosive = 0;
+		hit = 0;
+		indirectHit = 0;
+		fuseDistance = 0;
+		thrust = 0;
+		thrustTime = 0;
+		submunitionAmmo = "";
+		triggerOnImpact = 0;
 	};
-	class fpvGrenade : Grenade {
+	class fpvGrenade : Grenade 
+	{
 		explosionTime = -1; // -1
 		explosive = 0;
 		explosionAngle = 0;

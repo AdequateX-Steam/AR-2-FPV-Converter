@@ -36,5 +36,34 @@ _droneObject addEventHandler ["Disassembled" ,
 	_entity removeAllEventHandlers "Fired";
 	_entity removeAllEventHandlers "Killed";
 	_entity removeAllEventHandlers "Disassembled";
+	_entity removeAllEventHandlers "Deleted";
+	_entity setVariable ["ExpMagazine", ""];
+}];
+
+_droneObject addEventHandler ["Deleted" ,
+{	
+	params ["_entity"];
+	removeAllActions _entity;
+	_entity removeMagazines "FakeMagazine";
+	if (count attachedObjects _entity >= 1) then 
+	{
+		_magazineType = (_entity getVariable "ExpMagazine");
+		if (_magazineType != "") then 
+		{	
+			_droppedMag = "GroundWeaponHolder" createvehicle (getPosATL Player);
+			_droppedMag addMagazineCargo [_magazineType, 1];
+			_droppedMag setPosATL (getPosATL Player);
+		};
+		{
+			detach _x;
+			deleteVehicle _x;	
+		} foreach attachedObjects _entity;
+	};
+	
+	_entity removeAllEventHandlers "Hit";
+	_entity removeAllEventHandlers "Fired";
+	_entity removeAllEventHandlers "Killed";
+	_entity removeAllEventHandlers "Disassembled";
+	_entity removeAllEventHandlers "Deleted";
 	_entity setVariable ["ExpMagazine", ""];
 }];
