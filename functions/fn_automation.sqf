@@ -127,11 +127,9 @@ params
 			private _objType = (_x select 4);
 			if (_objType isKindOf (_targetClass select _xCurTargetIndex)) then 
 			{
-				//_newList append [_x];
 				if ((_xCurTargetIndex == 1) && {(_objType isKindOf "Wheeled_APC_F")}) exitWith {}; //if car/truck/mrap is selected with higher priority, dont include APCs that are also considered 'cars'
-				if ((_xCurTargetIndex == 0) && {(vehicle _objType)!= _objType}) exitWith {(_targetList deleteAt _forEachIndex);};
+				if ((_xCurTargetIndex == 0) && {(_preferredTargetType == 0) && {(vehicle _objType)!= _objType}}) exitWith {}; //(_targetList deleteAt _forEachIndex);
 				_newList pushBack _x;
-				///////// Need to detect if type "man" is in a vehicle and discard those results here for "man" type override selection
 			};
 			
 		} foreach _targetList;
@@ -140,8 +138,8 @@ params
 //Find highest preferred targets if they exist and sort by distance (2nd half); else return to player. ... WORKING
 	{	
 		private _xForeach = _x;
-		_targetCount = ({(_x select 4) isKindOf (_targetClass select _xForeach)} count _targetList);
-		if (_targetCount >= 1) exitWith {_targetCountIndex = _forEachIndex;};	
+		_targetCount = ({(_x select 4) isKindOf (_targetClass select _xForeach)} count _newList);
+		if (_targetCount >= 1) exitWith {_targetCountIndex = _forEachIndex;};	//set which unit type was found first based on priority ordering [man, car, tank, apc...]
 	} foreach _targetPriorityIndex;
 	
 	if (_targetCount >= 1) then 
