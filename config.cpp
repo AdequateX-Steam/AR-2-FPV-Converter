@@ -205,7 +205,7 @@ class CfgVehicles {
 		picture = "\A3\Drones_F\Air_F_Gamma\UAV_01\Data\UI\UAV_01_CA.paa";
 		class Reflectors{};
 		startDuration = 0.5; //1.00
-		maxSpeed = 160;
+		maxSpeed = 170;
 		precision = 10; //waypoint complete radius precision?
 		steerAheadSimul = 0.5;
 		steerAheadPlan = 0.7;

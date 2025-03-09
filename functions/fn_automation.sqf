@@ -3,7 +3,6 @@ private _droneObject = _this select 0;
 private _actionId = _this select 1;
 _droneObject setVariable ["EXP_targetType", 3]; //default initialization (3)
 
-
 ///////////////////////////////////////////////////////////////
 /////////////////		Functions		///////////////////////
 ///////////////////////////////////////////////////////////////
@@ -81,9 +80,8 @@ params
 	_enemyList =[];
 	_playerside = side player;
 	_newList = [];
-	//_preferredTargetType = 3; //0-3, not 4- "Air" //userdefineable in game
 	_preferredTargetType = (_droneObject getVariable "EXP_targetType"); //0-3, not 4- "Air" //userdefineable in game
-	_targetClass = ["Man","CAR","Wheeled_APC_F","Tank"];
+	_targetClass = ["Man","CAR","Wheeled_APC_F","Tank"]; //0, 1, 2, 3
 	_targetPriorityIndex = []; //highest to lowest priority(userpriority first, greatest to least 3 -> 0)
 	_targetCount = 0; //number of unit types found in total targetList sorted by targetPriorityIndex order
 	_targetCountIndex = 0; //which unit type was found first based on priority
@@ -111,7 +109,7 @@ params
 //Discard friendly units and air targets here...WORKING
 	{
 		private _objType = (_x select 4);		
-		if ((_x select 2) == (side _droneObject)) then {_targetList deleteat _forEachIndex;};
+		if ((_x select 2) == (side _droneObject)) then {_targetList deleteat _forEachIndex;}; //consider using isEqualTo (faster)
 		if ((_objType isKindOf "Air")) then {_targetList deleteAt _x;};	
 	} foreach _targetList;
 	
@@ -119,9 +117,7 @@ params
 	_targetPriorityIndex set [0, _preferredTargetType];  //[1,3,2,0], [2,3,1,0], [0,3,2,1]
 	for "_i" from 3 to 0 step -1 do 
 	{	
-		//private _index = 3 - _i; //does nothing
 		if (_i != _preferredTargetType) then {_targetPriorityIndex pushBack _i;};
-		//_index = _index + 1; //does nothing
 	};
 	
 //Sort preferred target first, and then weighted targets next  [car,car,car,TANK,APC,APC,man,man,man,man]... WORKING
@@ -132,14 +128,15 @@ params
 			if (_objType isKindOf (_targetClass select _xCurTargetIndex)) then 
 			{
 				//_newList append [_x];
-				if ((_xCurTargetIndex == 1) && (_objType isKindOf "Wheeled_APC_F")) exitWith {}; //if car/truck/mrap is selected with higher priority, dont include APCs that are also considered 'cars'
+				if ((_xCurTargetIndex == 1) && {(_objType isKindOf "Wheeled_APC_F")}) exitWith {}; //if car/truck/mrap is selected with higher priority, dont include APCs that are also considered 'cars'
+				if ((_xCurTargetIndex == 0) && {(vehicle _objType)!= _objType}) exitWith {(_targetList deleteAt _forEachIndex);};
 				_newList pushBack _x;
+				///////// Need to detect if type "man" is in a vehicle and discard those results here for "man" type override selection
 			};
 			
 		} foreach _targetList;
 	} foreach _targetPriorityIndex;
 		
-
 //Find highest preferred targets if they exist and sort by distance (2nd half); else return to player. ... WORKING
 	{	
 		private _xForeach = _x;
@@ -163,7 +160,7 @@ params
 		
 		
 		//Adjust flight height and return the found target...WORKING
-		(_droneObject) flyInHeight [1, true]; //used to be 0.75
+		(_droneObject) flyInHeight [1, true];
 		_foundTarget = ((_newList select _minDistanceIndex) select 4);
 		_foundTarget; //RETURN VARIABLE 
 	} 
@@ -182,28 +179,41 @@ Exp_fnc_targetSeek =
 	//_enemyTarget = highest value target that is the closest
 	_droneObject = _this select 0;
 	_enemyTarget = _this select 1;
-	_interceptDistance = 0.6; //Distance before intercept is considered complete
-	_interceptVelocityXYZ = [50, 50, 33]; //Top speed to accelerate to (m/s)  //drones top speed is actually only around 125 km/h @ 44m/s
+	_interceptDistance = 0.65; //Distance before intercept is considered complete
+	_interceptVelocity = [50, 50, 33]; //Top speed to accelerate to (m/s)
 	_targetCOM = getCenterOfMass _enemyTarget; //center of mass of target
-	_startTime = diag_tickTime;	//start of eachframeEH to compare against for furture time
+	_startFrame = diag_frameNo;	//start of eachframeEH to compare against for furture time
+	_accelerationRateTime = 3.5; //time to accelerate (non-linear, follows a torque curve)
 	
+	if ((_enemyTarget isKindOf "Man") && ((vehicle _enemyTarget) == _enemyTarget)) then 
+	{
+		if ((typeOf (((attachedObjects _droneObject))select 0)) == "ClaymoreDirectionalMine_Remote_Ammo") then //airburst distance for 'man' type targets
+		{
+			_interceptDistance = 24; //claymore directional distance
+		}
+		else
+		{
+			_interceptDistance = 4;  //general explosives distance
+		};
+	};
 	
+	////////////////// SEEKER SCRIPT ///////////////////////
 	_targetingUpdate = addMissionEventHandler ["EachFrame", 
 	{
 		//////_THISARGS REFERENCES//////
 		//_droneObject = (_thisArgs select 0);
 		//_enemyTarget = (_thisArgs select 1);
 		//_interceptDistance = (_thisArgs select 2);
-		//_interceptVelocityXYZ = (_thisArgs select 3);
+		//_interceptVelocity = (_thisArgs select 3);
 		//_targetCOM = (_thisArgs select 4);
-		//_startTime = (_thisArgs select 5);
-		
+		//_startFrame = (_thisArgs select 5);
+		//_accelerationRateTime = (_thisArgs select 6);
 		
 		If (!alive (_thisArgs select 1)) exitWith
 		{	
 			removeMissionEventHandler ["EachFrame", _thisEventHandler];
 			_target = [(_thisArgs select 0), (getPosATL (_thisArgs select 0))] call Exp_fnc_targetSearch;
-			
+			(_thisArgs select 0) setvariable ["EXP_accelTime", nil];
 			if ((typeName _target) == "OBJECT") then 
 			{
 				[(_thisArgs select 0), _target] spawn Exp_fnc_targetSeek;	
@@ -231,30 +241,52 @@ Exp_fnc_targetSeek =
 		_vectorDiffDistance = (_dronePos vectorDiff _futureTargetPos);
 		
 		///////////////////////////////////   TEST POS ICON3D   ///////////////////////////////////////////////
-/* 		
-		drawIcon3D [
-		"\a3\ui_f\data\IGUI\Cfg\Radar\radar_ca.paa", 
-		[1,0,0,1],
-		_targetPos,
-		1,
-		1, 
-		45, 
-		"Target", 
-		1, 
-		0.05, 
-		"TahomaB"]; 
-*/
+	
+	
+	//probably make this user toggleable and check if player is within 1000m, and using isEqualTo
+	if (((count (lineIntersectsWith [(AGLToASL (positionCameraToWorld [0,0,0])), (ATLToASL _targetPos), Player ,(_thisArgs select 1) , true])) == 0) && {(!(terrainIntersectASL [((AGLToASL (positionCameraToWorld [0,0,0]))),((ATLToASL _targetPos))]))}) then 
+	{
+		drawIcon3D 
+		[
+			"\a3\ui_f\data\IGUI\Cfg\Cursors\attack_ca.paa",  //"\a3\ui_f\data\IGUI\Cfg\Radar\radar_ca.paa"
+			[
+			[1,0,0,1],
+			[1,0.87,0.55,1]
+			],
+			_targetPos,
+			2,
+			2, 
+			45, 
+			"Target", 
+			1, 
+			0.05, 
+			"PuristaSemiBold"
+		]; 	
+	};
+
+
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		if ((_distanceToTarget >= (_thisArgs select 2)) && (alive (_thisArgs select 0))) then
 		{
 			
-			if ((diag_frameNo mod 4) == 0) then 
-			{			
-				////////////// LOWER FREQUENCY DRONE VELOCITY UPDATES HERE ////////////////
+			if ((diag_frameNo mod 4) == 0) then  //isEqualTo
+			{		
+			
+				////////////// LOWER FREQUENCY DRONE VELOCITY AND ANGLE UPDATES HERE ////////////////
 				_velocityVectorDirNorm = [];
-				_incVelocity = ([15.38, 15.38, 10.15] vectorMultiply (diag_tickTime - (_thisArgs select 5)));
-				if (((_incVelocity select 0) > 50) || ((_incVelocity select 1) > 50)) then {_incVelocity = (_thisArgs select 3);};																						
+ 				if (isNil {((_thisArgs select 0) getVariable "EXP_accelTime")}) then  ////////namespace isNil variableName (faster)
+				{
+					(_thisArgs select 0) setvariable ["EXP_accelTime", ((_thisArgs select 6) - ((diag_deltaTime) * 4))];
+				}
+				else
+				{
+					(_thisArgs select 0) setvariable ["EXP_accelTime", (((_thisArgs select 0) getVariable "EXP_accelTime") - ((diag_deltaTime) * 4))];
+				};
+				_accelTime = ((_thisArgs select 0) getVariable "EXP_accelTime");
+				if (_accelTime < 0) then {_accelTime = 0;};
+				_accelerationFactor = ((1 - (1.625 ^ (_accelTime * (_accelTime - 3.5)))) ^ (0.5 * (_accelTime ^ 1.75)));				
+				_incVelocity = ((_thisArgs select 3) vectorMultiply _accelerationFactor);						
 				_vectorDirNorm = _dronePos vectorFromTo _futureTargetPos;
 				_minVector = selectMin _vectorDirNorm;
 				if (_minVector < 0) then {_minVector = -(_minVector);};
@@ -264,14 +296,14 @@ Exp_fnc_targetSeek =
 				{
 					_velocityVectorDirNorm set [_forEachIndex, (linearConversion [0, _extremeVector, _x, 0, 1])];
 				}forEach _vectorDirNorm;
-				_incVelocity = (_incVelocity vectorMultiply _velocityVectorDirNorm); //_vectorDirNorm
-				_attackAngle = ((-(_incVelocity select 2)) / (vectorMagnitude _incVelocity));
+				_incVelocity = (_incVelocity vectorMultiply _velocityVectorDirNorm);
+				_attackAngle = ((-(_incVelocity select 2)) / (((vectorMagnitude _incVelocity)) + 0.0001)); // 0.0001 is to prevent 0 divisor error
 				(_thisArgs select 0) setVectorDir _vectorDirNorm;	
 				(_thisArgs select 0) setVectorUp 
 				[
-				((-cos (getDir (_thisArgs select 0) + 90)) * _attackAngle), 
-				((sin (getDir (_thisArgs select 0) + 90)) * _attackAngle),
-				(1 - _attackAngle)
+					((-cos (getDir (_thisArgs select 0) + 90)) * _attackAngle), 
+					((sin (getDir (_thisArgs select 0) + 90)) * _attackAngle),
+					(1 - _attackAngle)
 				]; 
 				(_thisArgs select 0) setvelocity _incVelocity;
 				
@@ -301,14 +333,18 @@ Exp_fnc_targetSeek =
 				(_thisArgs select 0) removeAllEventHandlers "Fired";
 				(_thisArgs select 0) removeAllEventHandlers "Hit";
 				(_thisArgs select 0) removeAllEventHandlers "Killed";
+				(_thisArgs select 0) removeAllEventHandlers "Disassembled"; ////////////
+				(_thisArgs select 0) removeAllEventHandlers "Deleted"; //////////////
 				removeMissionEventHandler ["EachFrame", _thisEventHandler];				
 		};
 		
-
-	},[_droneObject, _enemyTarget, _interceptDistance, _interceptVelocityXYZ, _targetCOM, _startTime] ];
+	},[_droneObject, _enemyTarget, _interceptDistance, _interceptVelocity, _targetCOM, _startFrame, _accelerationRateTime] ];
 	waitUntil {sleep 3; (!alive _droneObject)};
 	removeMissionEventHandler ["EachFrame", _targetingUpdate];
 };
+
+
+
 
 // This functions adds a waypoint to return the drone to the player and land 
 Exp_fnc_returnToPlayer = 
@@ -331,7 +367,7 @@ Exp_fnc_returnToPlayer =
 	_waypoint setWaypointForceBehaviour true;
 	waitUntil {sleep 1; (((_droneObject distance2D _pos ) <= 32) || (!alive _droneObject))};
 	_droneObject flyInHeight [0, false];
-	[_droneObject, false]remoteExec ["lockDriver"];
+	[_droneObject, false] remoteExec ["lockDriver"];
 	_droneObject enableUAVWaypoints true;
 	if (alive _droneObject) then {hint "Drone controls unlocked";};
 	waitUntil {sleep 0.66; ((((getPosATL _droneObject) select 2) < 3) || (!alive _droneObject))};
@@ -344,11 +380,10 @@ Exp_fnc_returnToPlayer =
 
 };
 
+
 ///////////////////////////////////////////////////////////////
 //////////////		Event Handlers		///////////////////////
 ///////////////////////////////////////////////////////////////
-
-
 _clickEHID = addMissionEventHandler ["MapSingleClick", 
 {
 	params ["_units", "_pos", "_alt", "_shift"];
