@@ -15,14 +15,14 @@ EXP_fnc_wayPointTraversal =
 	_droneObject = (_this select 0);
 	_pos = (_this select 1);
 	_target = 0;
-	_hostileRandomDistance = random [75,120,165]; // random distance (higher distances give AI a better chance to shoot down the drone)
+	_hostileRandomDist = random [140,190,230]; // random distance (higher distances give AI a better chance to shoot down the drone)
 	_droneObject setCaptive true; //tricks enemies until it gets closer to the waypoint or else it usually get shot down
 	_droneObject lockDriver true;
 	{deleteWaypoint _x;} forEachReversed (waypoints (group _droneObject));
 	_droneObject enableUAVWaypoints false; //disable player interference
 	_droneMarker1 = createMarker [((str _droneObject) + "DroneSearchArea"), _pos, 1, player];
 	_droneMarker1 setMarkerShape "ELLIPSE";
-	_droneMarker1 setMarkerSize [200,200];
+	_droneMarker1 setMarkerSize [250,250];
 	_droneMarker1 setMarkerBrush "DiagGrid";
 	_droneMarker1 setMarkerColor "ColorRed";
 	_droneMarker2 = createMarker [((str _droneObject) + "DroneSearchMarker"), _pos, 1, player];
@@ -36,13 +36,14 @@ EXP_fnc_wayPointTraversal =
 	group(_droneObject) setCombatMode "BLUE";
 	group(_droneObject) setCombatBehaviour "CARELESS";
 	_waypoint setWaypointBehaviour "CARELESS";
-	_waypoint setWaypointCompletionRadius 29; //29
+	_waypoint setWaypointCompletionRadius 40; //29
 	_waypoint setWaypointSpeed "FULL";
-	_waypoint setWaypointType "MOVE";
+	_waypoint setWaypointType "LOITER"; //MOVE
 	_waypoint setWaypointForceBehaviour true;
-	waitUntil{sleep 1.5; (((_droneObject distance2D _pos) <= _hostileRandomDistance) || !alive _droneObject)}; //low frequency check, for when a drone is far from its target
+	_waypoint setWaypointLoiterRadius 35;
+	waitUntil{sleep 1.5; (((_droneObject distance2D _pos) <= _hostileRandomDist) || !alive _droneObject)}; //low frequency check, for when a drone is far from its target
 	_droneObject setCaptive false; //returns to normal status as a hostile drone to the enemy targets
-	waitUntil{sleep 0.4; (((_droneObject distance2D _pos) <= 30) || !alive _droneObject)}; //higher frequency check
+	waitUntil{sleep 0.30; ((((_droneObject distance2D _pos) <= 115) && (((getPosAtl _droneObject) select 2) >= 40)) || !alive _droneObject)}; //higher frequency check
 	deleteWaypoint [group(_droneObject), 1];
 	if (alive _droneObject) then 
 	{
@@ -78,7 +79,6 @@ params
 ];
 	
 	_enemyList =[];
-	_playerside = side player;
 	_newList = [];
 	_preferredTargetType = (_droneObject getVariable "EXP_targetType"); //0-3, not 4- "Air" //userdefineable in game
 	_targetClass = ["Man","CAR","Wheeled_APC_F","Tank"]; //0, 1, 2, 3
@@ -87,8 +87,11 @@ params
 	_targetCountIndex = 0; //which unit type was found first based on priority
 	_minDistanceIndex = 0; //index of the unit from newlist with the highest priority and closest distance
 	_foundTarget = 0; //type 'object'; inialized as 0
-	_radius = 200 + 20; //radius of the searchzone + drone waypoint completion distance
+	_radius = 250; //radius of the searchzone
 	
+	
+/*	
+////OLD! Enemy list code	
 // Get player's enemies
 	if ((side _droneObject getFriend west) < 0.6) then {_enemyList append (units west);};
 	if ((side _droneObject getFriend east) < 0.6) then {_enemyList append (units east);};
@@ -107,13 +110,16 @@ params
 	_targetList = _droneObject nearTargets _radius; //[position (imprecise), targetType, side, subjectivecost, 'object', positionAccuracy] //performance hit 0.02ms
 	
 //Discard friendly units and air targets here...WORKING
+	_invalidTargets = [];
 	{
 		private _objType = (_x select 4);		
-		if ((_x select 2) == (side _droneObject)) then {_targetList deleteat _forEachIndex;}; //consider using isEqualTo (faster)
-		if ((_objType isKindOf "Air")) then {_targetList deleteAt _x;};	
+		if (((_x select 2) isEqualTo (side _droneObject)) || (_objType isKindOf "Air")) then {_invalidTargets append [_forEachIndex];}; // == -> isEqualTo,  _targetList deleteat _forEachIndex; ->
 	} foreach _targetList;
+	if ((count _invalidTargets) > 0) then {_targetList deleteAt _invalidTargets};
 	
-//Sets target priority weighting...	WORKING	
+	
+	
+	//Sets target priority weighting...	WORKING	
 	_targetPriorityIndex set [0, _preferredTargetType];  //[1,3,2,0], [2,3,1,0], [0,3,2,1]
 	for "_i" from 3 to 0 step -1 do 
 	{	
@@ -167,6 +173,76 @@ params
 		_foundTarget = 0;
 		_foundTarget;
 	};
+		
+*/
+
+
+////NEW! Nearby Enemy list code (3 - 4.5x faster)
+	_enemyList = [];
+	_enemyList append (_markerPOS nearEntities ["Man", _radius]);
+	_enemyList append (_markerPOS nearEntities ["CAR", _radius]);
+	_enemyList append (_markerPOS nearEntities ["Wheeled_APC_F", _radius]);
+	_enemyList append (_markerPOS nearEntities ["Tank", _radius]);
+	_removeIndexes = [];
+	{
+		if ((side _x isEqualTo side _droneObject) || ((side _droneObject getFriend side _x) > 0.6) || ((typename _x) isNotEqualTo (typename objNull))) then {_removeIndexes append [_foreachindex];};
+	}foreach _enemyList;	
+	if ((count _removeIndexes) > 0) then {_enemyList deleteat _removeIndexes;};
+
+	
+//Sets target priority weighting...	WORKING	
+	_targetPriorityIndex set [0, _preferredTargetType];  //[1,3,2,0], [2,3,1,0], [0,3,2,1]
+	for "_i" from 3 to 0 step -1 do 
+	{	
+		if (_i != _preferredTargetType) then {_targetPriorityIndex pushBack _i;};
+	};
+	
+//Sort preferred target first, and then weighted targets next  [car,car,car,TANK,APC,APC,man,man,man,man]... WORKING
+	{
+		private _xCurTargetIndex = _x; 
+		{
+			//private _objType = (_x select 4); //// this needs to match the object to the correct config inheritance base class
+			if (_x isKindOf (_targetClass select _xCurTargetIndex)) then 
+			{
+				if ((_xCurTargetIndex == 1) && {(_x isKindOf "Wheeled_APC_F")}) exitWith {}; //if car/truck/mrap is selected with higher priority, dont include APCs that are also considered 'cars'
+				if ((_xCurTargetIndex == 0) && {(_preferredTargetType == 0) && {(vehicle _x)!= _x}}) exitWith {};
+				_newList pushBack _x;
+			};	
+		} foreach _enemyList;
+	} foreach _targetPriorityIndex;
+		
+//Find highest preferred targets if they exist and sort by distance (2nd half); else return to player. ... WORKING
+	{	
+		private _xForeach = _x;
+		_targetCount = ({_x isKindOf (_targetClass select _xForeach)} count _newList);
+		if (_targetCount >= 1) exitWith {_targetCountIndex = _forEachIndex;};	//set which unit type was found first based on priority ordering [man, car, tank, apc...]
+	} foreach _targetPriorityIndex;
+	
+	if (_targetCount >= 1) then 
+	{
+		_minDistance = (_markerPOS distance2D (getPosATL (_newList select 0))); 
+
+		for "_i" from 1 to (_targetCount - 1) step 1 do 
+		{
+			if (_minDistance > (_markerPOS distance2D (getPosATL (_newList select _i)))) then 
+			{
+				_minDistance = (_markerPOS distance2D (getPosATL (_newList select _i)));
+				_minDistanceIndex = _i;		
+			};	
+		};
+		//hint str [_droneObject, typeOf ((_newList select _minDistanceIndex) select 4)];
+		
+		
+		//Adjust flight height and return the found target...WORKING
+		(_droneObject) flyInHeight [1, true];
+		_foundTarget = (_newList select _minDistanceIndex);
+		_foundTarget; //RETURN VARIABLE 
+	} 
+	else //no found target
+	{
+		_foundTarget = 0;
+		_foundTarget;
+	};
 };
 
 //Seeker Function to track and intercept target .... WORKING
@@ -181,7 +257,7 @@ Exp_fnc_targetSeek =
 	_interceptVelocity = [50, 50, 33]; //Top speed to accelerate to (m/s)
 	_targetCOM = getCenterOfMass _enemyTarget; //center of mass of target
 	_startFrame = diag_frameNo;	//start of eachframeEH to compare against for furture time
-	_accelerationRateTime = 3.5; //time to accelerate (non-linear, follows a torque curve)
+	_accelerationRateTime = 3.5; //time to accelerate (non-linear, follows a curve)
 	
 	if ((_enemyTarget isKindOf "Man") && ((vehicle _enemyTarget) == _enemyTarget)) then 
 	{
@@ -246,7 +322,7 @@ Exp_fnc_targetSeek =
 	{
 		drawIcon3D 
 		[
-			"\a3\ui_f\data\IGUI\Cfg\Cursors\attack_ca.paa",  //"\a3\ui_f\data\IGUI\Cfg\Radar\radar_ca.paa"
+			"\a3\ui_f\data\IGUI\Cfg\Cursors\attack_ca.paa",
 			[
 			[1,0,0,1],
 			[1,0.87,0.55,1]
@@ -268,7 +344,7 @@ Exp_fnc_targetSeek =
 		if ((_distanceToTarget >= (_thisArgs select 2)) && (alive (_thisArgs select 0))) then
 		{
 			
-			if ((diag_frameNo mod 4) == 0) then  //isEqualTo
+			if ((diag_frameNo mod 4) isEqualTo 0) then  //== -> isEqualTo
 			{		
 			
 				////////////// LOWER FREQUENCY DRONE VELOCITY AND ANGLE UPDATES HERE ////////////////
@@ -331,8 +407,8 @@ Exp_fnc_targetSeek =
 				(_thisArgs select 0) removeAllEventHandlers "Fired";
 				(_thisArgs select 0) removeAllEventHandlers "Hit";
 				(_thisArgs select 0) removeAllEventHandlers "Killed";
-				(_thisArgs select 0) removeAllEventHandlers "Disassembled"; ////////////
-				(_thisArgs select 0) removeAllEventHandlers "Deleted"; //////////////
+				(_thisArgs select 0) removeAllEventHandlers "Disassembled";
+				(_thisArgs select 0) removeAllEventHandlers "Deleted"; 
 				removeMissionEventHandler ["EachFrame", _thisEventHandler];				
 		};
 		
@@ -386,9 +462,9 @@ _clickEHID = addMissionEventHandler ["MapSingleClick",
 {
 	params ["_units", "_pos", "_alt", "_shift"];
 	//need to set a maximum waypoint distance
-	if ((_pos distance2D player) < 35) then 
+	if ((_pos distance2D player) < 20) then 
 	{
-		hint format ["Minimum required distance from player: 35 meters; Current distance: %1 meters",(_pos distance2D player)];
+		hint format ["Minimum required distance from player: 20 meters; Current distance: %1 meters",(_pos distance2D player)];
 	}
 	else
 	{

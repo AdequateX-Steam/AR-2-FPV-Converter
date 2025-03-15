@@ -78,6 +78,8 @@ if (_dropped == false) then
 				_unit removeAllEventHandlers "Fired";
 				_unit removeAllEventHandlers "Hit";
 				_unit removeAllEventHandlers "Killed";
+				_unit removeAllEventHandlers "Disassembled";
+				_unit removeAllEventHandlers "Deleted"; 
 			};
 		}];
 		
@@ -107,6 +109,8 @@ if (_dropped == false) then
 				_unit removeAllEventHandlers "Fired";
 				_unit removeAllEventHandlers "Hit";
 				_unit removeAllEventHandlers "Killed";
+				_unit removeAllEventHandlers "Disassembled";
+				_unit removeAllEventHandlers "Deleted"; 
 			
 		}];
 		
@@ -135,6 +139,8 @@ if (_dropped == false) then
 			_unit removeAllEventHandlers "Fired";
 			_unit removeAllEventHandlers "Hit";
 			_unit removeAllEventHandlers "Killed";
+			_unit removeAllEventHandlers "Disassembled";
+			_unit removeAllEventHandlers "Deleted"; 
 		}];
 }
 else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
@@ -152,6 +158,8 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 					_unit removeAllEventHandlers "Fired";
 					_unit removeAllEventHandlers "Hit";
 					_unit removeAllEventHandlers "Killed";
+					_unit removeAllEventHandlers "Disassembled";
+					_unit removeAllEventHandlers "Deleted"; 
 				}
 		}];
 		
@@ -181,6 +189,8 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 			_unit removeAllEventHandlers "Fired";
 			_unit removeAllEventHandlers "Hit";
 			_unit removeAllEventHandlers "Killed";
+			_unit removeAllEventHandlers "Disassembled";
+			_unit removeAllEventHandlers "Deleted"; 
 		
 	}];	
 			
@@ -293,6 +303,8 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 				_unit removeAllEventHandlers "Fired";
 				_unit removeAllEventHandlers "Hit";
 				_unit removeAllEventHandlers "Killed";
+				_unit removeAllEventHandlers "Disassembled";
+				_unit removeAllEventHandlers "Deleted"; 
 		}];
 };
 /////////////////Automation//////////////////
