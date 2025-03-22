@@ -74,7 +74,7 @@ if (_dropped == false) then
 					}; 
 								
 				} forEach attachedObjects _unit;
-				[] spawn Exp_fnc_removeHud;
+				//[] spawn Exp_fnc_removeHud;
 				_unit removeAllEventHandlers "Fired";
 				_unit removeAllEventHandlers "Hit";
 				_unit removeAllEventHandlers "Killed";
@@ -105,7 +105,7 @@ if (_dropped == false) then
 					}; 
 								
 				} forEach attachedObjects _unit;
-				[] spawn Exp_fnc_removeHud;
+				//[] spawn Exp_fnc_removeHud;
 				_unit removeAllEventHandlers "Fired";
 				_unit removeAllEventHandlers "Hit";
 				_unit removeAllEventHandlers "Killed";
@@ -135,7 +135,7 @@ if (_dropped == false) then
 				}; 
 								
 			} forEach attachedObjects _unit;
-			[] spawn Exp_fnc_removeHud;
+			//[] spawn Exp_fnc_removeHud;
 			_unit removeAllEventHandlers "Fired";
 			_unit removeAllEventHandlers "Hit";
 			_unit removeAllEventHandlers "Killed";
@@ -154,7 +154,7 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 					{
 						triggerAmmo _x;
 					} forEach attachedObjects _unit;
-					[] spawn Exp_fnc_removeHud;
+					//[] spawn Exp_fnc_removeHud;
 					_unit removeAllEventHandlers "Fired";
 					_unit removeAllEventHandlers "Hit";
 					_unit removeAllEventHandlers "Killed";
@@ -185,7 +185,7 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 				}; 
 							
 			} forEach attachedObjects _unit;
-			[] spawn Exp_fnc_removeHud;
+			//[] spawn Exp_fnc_removeHud;
 			_unit removeAllEventHandlers "Fired";
 			_unit removeAllEventHandlers "Hit";
 			_unit removeAllEventHandlers "Killed";

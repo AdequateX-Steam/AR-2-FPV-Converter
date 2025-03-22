@@ -11,7 +11,7 @@ if (hasInterface) then  //Run on all players + SP host
 					[_staticWeapon] spawn Exp_fnc_droneConverter;
 				};
 			}];
-						
+/* 	//old Hud handling				
 			player addEventHandler ["Respawn", 
 			{
 				params ["_unit", "_corpse"];
@@ -22,7 +22,38 @@ if (hasInterface) then  //Run on all players + SP host
 			{
 				params ["_unit", "_killer", "_instigator", "_useEffects"];
 				isNil {[] spawn Exp_fnc_removeHud};  //either spawn only, or isnil call code for unscheduled environment
-			}];
+			}]; */
 			
-			[] spawn Exp_fnc_showHUD;
+			
+			
+		///for UI handling	
+			addMissionEventHandler ["PlayerViewChanged",
+			{
+				params 
+				[
+					"_oldUnit", "_newUnit", "_vehicleIn",
+					"_oldCameraOn", "_newCameraOn", "_uav"
+				];
+				if ((_newCameraOn isKindOf "fpv_Base_F")) then 
+				{
+					player setVariable ["UiEnabled", false];
+					[] spawn Exp_fnc_hudHandler;
+				};
+							
+				if (!(_newCameraOn isKindOf "fpv_Base_F")) then 
+				{
+					player setVariable ["UiEnabled", true];
+					[] spawn Exp_fnc_hudHandler;
+				};
+			}];  
+
+			
+			
+/* 			[] spawn Exp_fnc_showHUD;		 */
+			
 };
+
+
+
+
+

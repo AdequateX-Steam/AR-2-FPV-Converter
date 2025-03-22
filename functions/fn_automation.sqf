@@ -15,7 +15,7 @@ EXP_fnc_wayPointTraversal =
 	_droneObject = (_this select 0);
 	_pos = (_this select 1);
 	_target = 0;
-	_hostileRandomDist = random [140,190,230]; // random distance (higher distances give AI a better chance to shoot down the drone)
+	_hostileRandomDist = random [150,190,250]; // random distance (higher distances give AI a better chance to shoot down the drone)
 	_droneObject setCaptive true; //tricks enemies until it gets closer to the waypoint or else it usually get shot down
 	_droneObject lockDriver true;
 	{deleteWaypoint _x;} forEachReversed (waypoints (group _droneObject));
@@ -89,93 +89,6 @@ params
 	_foundTarget = 0; //type 'object'; inialized as 0
 	_radius = 250; //radius of the searchzone
 	
-	
-/*	
-////OLD! Enemy list code	
-// Get player's enemies
-	if ((side _droneObject getFriend west) < 0.6) then {_enemyList append (units west);};
-	if ((side _droneObject getFriend east) < 0.6) then {_enemyList append (units east);};
-	if ((side _droneObject getFriend independent) < 0.6) then {_enemyList append (units independent);};
-
-//Get enemies within range and reveal them for nearTargets
-	{
-		if ((_droneObject distance2D (getPosATL _x)) <= _radius) then //probably change _droneObject to marker pos
-		{
-			_droneObject reveal _x;
-			_droneObject reveal (vehicle _x);
-		};
-	} foreach (_enemyList);
-
-	//get full list of enemy units 'objects' here
-	_targetList = _droneObject nearTargets _radius; //[position (imprecise), targetType, side, subjectivecost, 'object', positionAccuracy] //performance hit 0.02ms
-	
-//Discard friendly units and air targets here...WORKING
-	_invalidTargets = [];
-	{
-		private _objType = (_x select 4);		
-		if (((_x select 2) isEqualTo (side _droneObject)) || (_objType isKindOf "Air")) then {_invalidTargets append [_forEachIndex];}; // == -> isEqualTo,  _targetList deleteat _forEachIndex; ->
-	} foreach _targetList;
-	if ((count _invalidTargets) > 0) then {_targetList deleteAt _invalidTargets};
-	
-	
-	
-	//Sets target priority weighting...	WORKING	
-	_targetPriorityIndex set [0, _preferredTargetType];  //[1,3,2,0], [2,3,1,0], [0,3,2,1]
-	for "_i" from 3 to 0 step -1 do 
-	{	
-		if (_i != _preferredTargetType) then {_targetPriorityIndex pushBack _i;};
-	};
-	
-//Sort preferred target first, and then weighted targets next  [car,car,car,TANK,APC,APC,man,man,man,man]... WORKING
-	{
-		private _xCurTargetIndex = _x; 
-		{
-			private _objType = (_x select 4);
-			if (_objType isKindOf (_targetClass select _xCurTargetIndex)) then 
-			{
-				if ((_xCurTargetIndex == 1) && {(_objType isKindOf "Wheeled_APC_F")}) exitWith {}; //if car/truck/mrap is selected with higher priority, dont include APCs that are also considered 'cars'
-				if ((_xCurTargetIndex == 0) && {(_preferredTargetType == 0) && {(vehicle _objType)!= _objType}}) exitWith {}; //(_targetList deleteAt _forEachIndex);
-				_newList pushBack _x;
-			};
-			
-		} foreach _targetList;
-	} foreach _targetPriorityIndex;
-		
-//Find highest preferred targets if they exist and sort by distance (2nd half); else return to player. ... WORKING
-	{	
-		private _xForeach = _x;
-		_targetCount = ({(_x select 4) isKindOf (_targetClass select _xForeach)} count _newList);
-		if (_targetCount >= 1) exitWith {_targetCountIndex = _forEachIndex;};	//set which unit type was found first based on priority ordering [man, car, tank, apc...]
-	} foreach _targetPriorityIndex;
-	
-	if (_targetCount >= 1) then 
-	{
-		_minDistance = ((getPosATL _droneObject) distance2D (getPosATL ((_newList select 0) select 4))); 
-
-		for "_i" from 1 to (_targetCount - 1) step 1 do 
-		{
-			if (_minDistance > ((getPosATL _droneObject) distance2D (getPosATL ((_newList select _i) select 4)))) then 
-			{
-				_minDistance = ((getPosATL _droneObject) distance2D (getPosATL ((_newList select _i) select 4)));
-				_minDistanceIndex = _i;		
-			};	
-		};
-		//hint str [_droneObject, typeOf ((_newList select _minDistanceIndex) select 4)];
-		
-		
-		//Adjust flight height and return the found target...WORKING
-		(_droneObject) flyInHeight [1, true];
-		_foundTarget = ((_newList select _minDistanceIndex) select 4);
-		_foundTarget; //RETURN VARIABLE 
-	} 
-	else //no found target
-	{
-		_foundTarget = 0;
-		_foundTarget;
-	};
-		
-*/
-
 
 ////NEW! Nearby Enemy list code (3 - 4.5x faster)
 	_enemyList = [];
@@ -230,8 +143,6 @@ params
 				_minDistanceIndex = _i;		
 			};	
 		};
-		//hint str [_droneObject, typeOf ((_newList select _minDistanceIndex) select 4)];
-		
 		
 		//Adjust flight height and return the found target...WORKING
 		(_droneObject) flyInHeight [1, true];
@@ -253,21 +164,29 @@ Exp_fnc_targetSeek =
 	//_enemyTarget = highest value target that is the closest
 	_droneObject = _this select 0;
 	_enemyTarget = _this select 1;
-	_interceptDistance = 0.65; //Distance before intercept is considered complete
+	_interceptDistance = 0.3; //Distance before intercept is considered complete (default value)
 	_interceptVelocity = [50, 50, 33]; //Top speed to accelerate to (m/s)
-	_targetCOM = getCenterOfMass _enemyTarget; //center of mass of target
+	_targetCOM = getCenterOfMass _enemyTarget; //center of mass of target (only applicable to modelspace, needs to be translated using cos(dir) + sin(dir) for world space)
 	_startFrame = diag_frameNo;	//start of eachframeEH to compare against for furture time
 	_accelerationRateTime = 3.5; //time to accelerate (non-linear, follows a curve)
 	
 	if ((_enemyTarget isKindOf "Man") && ((vehicle _enemyTarget) == _enemyTarget)) then 
 	{
-		if ((typeOf (((attachedObjects _droneObject))select 0)) == "ClaymoreDirectionalMine_Remote_Ammo") then //airburst distance for 'man' type targets
+		if ((typeOf (((attachedObjects _droneObject))select 0)) == "ClaymoreDirectionalMine_Remote_Ammo") then //airburst distance for 'man' type targets 
 		{
-			_interceptDistance = 24; //claymore directional distance
+			_interceptDistance = 24.5; //claymore directional distance
 		}
 		else
 		{
-			_interceptDistance = 4;  //general explosives distance
+		
+			if ((typeOf (((attachedObjects _droneObject))select 0)) isKindOf "DirectionalBombBase") then //airburst distance for 'man' type targets with either claymore types or general explosive types.
+			{
+				_interceptDistance = 16.5; //general directional mines that arent vanilla claymores. (Mruds, Slams...)
+			}
+			else
+			{
+				_interceptDistance = 5;  //general explosives distance
+			};
 		};
 	};
 	
@@ -344,7 +263,7 @@ Exp_fnc_targetSeek =
 		if ((_distanceToTarget >= (_thisArgs select 2)) && (alive (_thisArgs select 0))) then
 		{
 			
-			if ((diag_frameNo mod 4) isEqualTo 0) then  //== -> isEqualTo
+			if ((diag_frameNo mod 4) isEqualTo 0) then
 			{		
 			
 				////////////// LOWER FREQUENCY DRONE VELOCITY AND ANGLE UPDATES HERE ////////////////
@@ -564,3 +483,95 @@ addMissionEventHandler ["Draw3D", {
 }];
 
  */
+
+
+
+
+
+
+
+/*	
+////OLD! Enemy list code	
+// Get player's enemies
+	if ((side _droneObject getFriend west) < 0.6) then {_enemyList append (units west);};
+	if ((side _droneObject getFriend east) < 0.6) then {_enemyList append (units east);};
+	if ((side _droneObject getFriend independent) < 0.6) then {_enemyList append (units independent);};
+
+//Get enemies within range and reveal them for nearTargets
+	{
+		if ((_droneObject distance2D (getPosATL _x)) <= _radius) then //probably change _droneObject to marker pos
+		{
+			_droneObject reveal _x;
+			_droneObject reveal (vehicle _x);
+		};
+	} foreach (_enemyList);
+
+	//get full list of enemy units 'objects' here
+	_targetList = _droneObject nearTargets _radius; //[position (imprecise), targetType, side, subjectivecost, 'object', positionAccuracy] //performance hit 0.02ms
+	
+//Discard friendly units and air targets here...WORKING
+	_invalidTargets = [];
+	{
+		private _objType = (_x select 4);		
+		if (((_x select 2) isEqualTo (side _droneObject)) || (_objType isKindOf "Air")) then {_invalidTargets append [_forEachIndex];}; // == -> isEqualTo,  _targetList deleteat _forEachIndex; ->
+	} foreach _targetList;
+	if ((count _invalidTargets) > 0) then {_targetList deleteAt _invalidTargets};
+	
+	
+	
+	//Sets target priority weighting...	WORKING	
+	_targetPriorityIndex set [0, _preferredTargetType];  //[1,3,2,0], [2,3,1,0], [0,3,2,1]
+	for "_i" from 3 to 0 step -1 do 
+	{	
+		if (_i != _preferredTargetType) then {_targetPriorityIndex pushBack _i;};
+	};
+	
+//Sort preferred target first, and then weighted targets next  [car,car,car,TANK,APC,APC,man,man,man,man]... WORKING
+	{
+		private _xCurTargetIndex = _x; 
+		{
+			private _objType = (_x select 4);
+			if (_objType isKindOf (_targetClass select _xCurTargetIndex)) then 
+			{
+				if ((_xCurTargetIndex == 1) && {(_objType isKindOf "Wheeled_APC_F")}) exitWith {}; //if car/truck/mrap is selected with higher priority, dont include APCs that are also considered 'cars'
+				if ((_xCurTargetIndex == 0) && {(_preferredTargetType == 0) && {(vehicle _objType)!= _objType}}) exitWith {}; //(_targetList deleteAt _forEachIndex);
+				_newList pushBack _x;
+			};
+			
+		} foreach _targetList;
+	} foreach _targetPriorityIndex;
+		
+//Find highest preferred targets if they exist and sort by distance (2nd half); else return to player. ... WORKING
+	{	
+		private _xForeach = _x;
+		_targetCount = ({(_x select 4) isKindOf (_targetClass select _xForeach)} count _newList);
+		if (_targetCount >= 1) exitWith {_targetCountIndex = _forEachIndex;};	//set which unit type was found first based on priority ordering [man, car, tank, apc...]
+	} foreach _targetPriorityIndex;
+	
+	if (_targetCount >= 1) then 
+	{
+		_minDistance = ((getPosATL _droneObject) distance2D (getPosATL ((_newList select 0) select 4))); 
+
+		for "_i" from 1 to (_targetCount - 1) step 1 do 
+		{
+			if (_minDistance > ((getPosATL _droneObject) distance2D (getPosATL ((_newList select _i) select 4)))) then 
+			{
+				_minDistance = ((getPosATL _droneObject) distance2D (getPosATL ((_newList select _i) select 4)));
+				_minDistanceIndex = _i;		
+			};	
+		};
+		//hint str [_droneObject, typeOf ((_newList select _minDistanceIndex) select 4)];
+		
+		
+		//Adjust flight height and return the found target...WORKING
+		(_droneObject) flyInHeight [1, true];
+		_foundTarget = ((_newList select _minDistanceIndex) select 4);
+		_foundTarget; //RETURN VARIABLE 
+	} 
+	else //no found target
+	{
+		_foundTarget = 0;
+		_foundTarget;
+	};
+		
+*/

@@ -29,7 +29,7 @@ _droneObject = _this select 0;
 		_replacementVectorDir = vectorDir _target;
 		_replacementClass = [_target] call Exp_fnc_droneCfg;
 		deleteVehicle _target;
-		_newFPV = createVehicle [((_replacementClass select [0,1]) + "_FPV_AR2"), [(_replacementPOS select 0),(_replacementPOS select 1),((_replacementPOS select 2)+ 0.15)], [], 0, "CAN_COLLIDE"];
+		_newFPV = createVehicle [((_replacementClass select [0,1]) + "_FPV_AR2"), [(_replacementPOS select 0),(_replacementPOS select 1),((_replacementPOS select 2)+ 0.25)], [], 0, "CAN_COLLIDE"];
 		_newFPV setVectorDir _replacementVectorDir;
 		waitUntil {!isNil{_newFPV getVariable "ExpInitAction"}}; // waits until drone registers its default init action that is created upon spawn, so that the duplicate action can be removed
 		_actionInit = _newFPV getVariable "ExpInitAction";

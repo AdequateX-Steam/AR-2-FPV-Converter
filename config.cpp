@@ -44,7 +44,7 @@ class CfgWeapons
 	{
 		displayName = "Activate";	
 		burst=1;
-		magazines[]={"FakeMagazine"};			
+		magazines[]={"FakeMagazine"};
 	};
 		
 };
@@ -56,7 +56,7 @@ class CfgAmmo
 	class Grenade;
 	class fpvAmmo : M_SPG9_HEAT 
 	{
-		timeToLive = 1800; //30 minutes auto detonate
+		timeToLive = 2100; //35 minutes auto detonate
 		effectsMissileInit = "";
 		explosive = 0;
 		hit = 0;
@@ -66,6 +66,9 @@ class CfgAmmo
 		thrustTime = 0;
 		submunitionAmmo = "";
 		triggerOnImpact = 0;
+		soundFly[] ={};
+		soundEngine[] = {};
+		soundHit[] = {};
 	};
 	class fpvGrenade : Grenade 
 	{
@@ -93,7 +96,7 @@ class CfgAmmo
 		hit = 0;
 		indirectHitRange = 0;
 		indirectHit = 0;
-		timeToLive = 1800; //30 minutes auto delete (1800)
+		timeToLive = 2100; //35 minutes auto delete (2100)
 		thrustTime = 0;
 		thrust = 0;
 	};
@@ -192,7 +195,7 @@ class CfgVehicles {
 		camouflage = 0.20;
 		audible = 0.1;
 		armor = 2; //0.5
-		cost = 200; /////20000
+		cost = 100; /////200 //20000
 		altFullForce = 1250; 
 		altNoForce = 2000;	
 		LODTurnedIn = -1;
@@ -218,17 +221,19 @@ class CfgVehicles {
 		backRotorForceCoef = 4.0; /////////5.0 (default) -> 4.0
 		fuelCapacity = 15; ///////////////////////////////////
 		maxFordingDepth = 0.3;
-		threat[] = {0.04,0.1,0.05};
+		threat[] = {0.60,0.70,0.125}; //{0.04,0.1,0.05};
 		envelope[] = {0,0.4,1.3,2.5,2.9,3.7,3.9,4.0,4.1,4.2,4.2,3,0.9,0.7,0.5};   ////TEST/////////relative to maxspeed in increments of 10% -> 140%{0.1, 0.2, 0.3 ... 1.2, 1.3, 1.4}, stock ar-2 envelope[] = {0,0.2,0.9,2.1,2.5,3.3,3.5,3.6,3.7,3.8,3.8,3,0.9,0.7,0.5};
 		maxMainRotorDive = 0;
 		minMainRotorDive = 0;
 		neutralMainRotorDive = 0;
 		gearRetracting = 0;
-		mainRotorSpeed = -7.0;
-		backRotorSpeed = 7.0;
+		mainRotorSpeed = -7.0; //-7
+		backRotorSpeed = 7.0; //7
 		tailBladeVertical = 0;
-		radarTargetSize = 0.1;
-		visualTargetSize = 0.1;
+		radarTarget = 1; ////////
+		radarTargetSize = 0.175;
+		visualTarget = 1; ///////
+		visualTargetSize = 0.275; /// 0.1
 		irTarget = 0;
 		lockDetectionSystem = 0;
 		incomingMissileDetectionSystem = 0;
@@ -294,35 +299,83 @@ class CfgVehicles {
 			{
 				class Components
 				{
+					class DataLinkSensorComponent: SensorTemplateDataLink 
+					{
+						
+						class AirTarget
+						{
+							minRange = 0; //////////
+							maxRange = 2000; /////////
+							objectDistanceLimitCoef = 1;
+							viewDistanceLimitCoef = 1;
+						};
+						class GroundTarget
+						{
+							minRange = 0; ///////////
+							maxRange = 2000; ///////////
+							objectDistanceLimitCoef = 1;
+							viewDistanceLimitCoef = 1;
+						};	
+						
+						
+					};
 					class ManSensorComponent: SensorTemplateMan
 					{
 						maxTrackableSpeed = 25;
-						angleRangeHorizontal = 75; //60
+						angleRangeHorizontal = 80; //60
 						angleRangeVertical = 60; //45
 						animDirection = "mainGun";
-						aimDown = -55.5; //-0.5
+						aimDown = 5.5; //-0.5
+						allowsMarking= 1;
+						minRange = 100; //////////
+						maxRange = 700; /////////
+					};
+					class VisualSensorComponent: SensorTemplateVisual /////////////////////////// new component
+					{
+						angleRangeHorizontal = 80;
+						angleRangeVertical = 60;
+						maxTrackableSpeed = 45;
+						animDirection = "mainGun";
+						aimDown = 5.5;
+						allowsMarking= 1;
+						class AirTarget
+						{
+							minRange = 400; //////////
+							maxRange = 1700; /////////
+							objectDistanceLimitCoef = 1;
+							viewDistanceLimitCoef = 1;
+						};
+						class GroundTarget
+						{
+							minRange = 125; ///////////
+							maxRange = 1400; ///////////
+							objectDistanceLimitCoef = 1;
+							viewDistanceLimitCoef = 1;
+						};
+						
 					};
 					class IRSensorComponent: SensorTemplateIR
 					{
 						class AirTarget
 						{
-							minRange = 300; //////////
+							minRange = 600; //////////
 							maxRange = 2000; /////////
-							objectDistanceLimitCoef = -1;
+							objectDistanceLimitCoef = 1;
 							viewDistanceLimitCoef = 1;
 						};
 						class GroundTarget
 						{
-							minRange = 100; ///////////
+							minRange = 300; ///////////
 							maxRange = 1600; ///////////
 							objectDistanceLimitCoef = 1;
 							viewDistanceLimitCoef = 1;
 						};
-						maxTrackableSpeed = 35; ////////////
-						angleRangeHorizontal = 75; //60
+						allowsMarking= 1;
+						maxTrackableSpeed = 45; ////////////
+						angleRangeHorizontal = 70; //60
 						angleRangeVertical = 60; //45
 						animDirection = "mainGun";
-						aimDown = -5.5; // -0.5
+						aimDown = 5.5; // -0.5
 					};
 				};
 			};
@@ -403,39 +456,39 @@ class CfgVehicles {
 			class Engine
 			{
 				sound[] = {"A3\Sounds_F\air\Uav_01\quad_engine_full_01",0.4466836,1.0,200};
-				frequency = "rotorSpeed";
+				frequency = "rotorSpeed * 1.5";
 				volume = "camPos*((rotorSpeed-0.72)*4)";
 			};
 			class RotorLowOut
 			{
 				sound[] = {"A3\Sounds_F\air\Uav_01\blade",0.31622776,1.0,200};
-				frequency = "rotorSpeed";
+				frequency = "rotorSpeed * 1.5";
 				volume = "camPos*(0 max (rotorSpeed-0.1))";
 				cone[] = {1.6,3.14,1.6,0.95};
 			};
 			class RotorHighOut
 			{
 				sound[] = {"A3\Sounds_F\air\Uav_01\blade_high",0.31622776,1.0,250};
-				frequency = "rotorSpeed";
+				frequency = "rotorSpeed * 1.5";
 				volume = "camPos*10*(0 max (rotorThrust-0.9))";
 				cone[] = {1.6,3.14,1.6,0.95};
 			};
 			class EngineIn
 			{
 				sound[] = {"A3\Sounds_F\air\Uav_01\quad_engine_full_int",0.56234133,1.0};
-				frequency = "rotorSpeed";
+				frequency = "rotorSpeed * 1.5";
 				volume = "(1-camPos)*((rotorSpeed-0.75)*4)";
 			};
 			class RotorLowIn
 			{
 				sound[] = {"A3\Sounds_F\air\Uav_01\blade_int",0.56234133,1.0};
-				frequency = "rotorSpeed";
+				frequency = "rotorSpeed * 1.5";
 				volume = "(1-camPos)*(0 max (rotorSpeed-0.1))";
 			};
 			class RotorHighIn
 			{
 				sound[] = {"A3\Sounds_F\air\Uav_01\blade_high_int",0.56234133,1.0};
-				frequency = "rotorSpeed";
+				frequency = "rotorSpeed * 1.5";
 				volume = "(1-camPos)*3*(rotorThrust-0.9)";
 			};
 		};
