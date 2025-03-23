@@ -13,8 +13,6 @@ class Exp {
 			class rearmDrone{};
 			class attachPoint{};
 			class blackList{};
-			//class showHUD{};
-			//class removeHud{};
 			class automation{};
 			class CBA_settings{
 				postInit = 1;

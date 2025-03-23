@@ -74,7 +74,6 @@ if (_dropped == false) then
 					}; 
 								
 				} forEach attachedObjects _unit;
-				//[] spawn Exp_fnc_removeHud;
 				_unit removeAllEventHandlers "Fired";
 				_unit removeAllEventHandlers "Hit";
 				_unit removeAllEventHandlers "Killed";
@@ -105,7 +104,6 @@ if (_dropped == false) then
 					}; 
 								
 				} forEach attachedObjects _unit;
-				//[] spawn Exp_fnc_removeHud;
 				_unit removeAllEventHandlers "Fired";
 				_unit removeAllEventHandlers "Hit";
 				_unit removeAllEventHandlers "Killed";
@@ -135,7 +133,6 @@ if (_dropped == false) then
 				}; 
 								
 			} forEach attachedObjects _unit;
-			//[] spawn Exp_fnc_removeHud;
 			_unit removeAllEventHandlers "Fired";
 			_unit removeAllEventHandlers "Hit";
 			_unit removeAllEventHandlers "Killed";
@@ -154,7 +151,6 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 					{
 						triggerAmmo _x;
 					} forEach attachedObjects _unit;
-					//[] spawn Exp_fnc_removeHud;
 					_unit removeAllEventHandlers "Fired";
 					_unit removeAllEventHandlers "Hit";
 					_unit removeAllEventHandlers "Killed";
@@ -185,7 +181,6 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 				}; 
 							
 			} forEach attachedObjects _unit;
-			//[] spawn Exp_fnc_removeHud;
 			_unit removeAllEventHandlers "Fired";
 			_unit removeAllEventHandlers "Hit";
 			_unit removeAllEventHandlers "Killed";
@@ -308,14 +303,14 @@ else  														// XXXXXXXX Dropped Event Handlers XXXXXXXXXX
 		}];
 };
 /////////////////Automation//////////////////
-if (_dropped == False) then {
+if (_dropped == False) then 
+{
 
 	_droneObject addAction ["<t color='#bf6d02'>Auto-target acquistion</t>",  
 	{ 
 		params ["_target", "_caller", "_actionId"];
 		[_target, _actionId] spawn Exp_fnc_automation;
 	}, nil, 6, true, true, "", "(((damage _target) != 1) && ((side _target) == (side player)) && (cameraOn == player))", 2, false, "",""];
-
 
 }; 
 

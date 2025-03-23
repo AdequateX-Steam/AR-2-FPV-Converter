@@ -52,8 +52,3 @@ if (hasInterface) then  //Run on all players + SP host
 /* 			[] spawn Exp_fnc_showHUD;		 */
 			
 };
-
-
-
-
-

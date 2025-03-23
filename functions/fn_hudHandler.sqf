@@ -9,7 +9,7 @@ if (cameraon == player) exitWith  //exception handler for CBA setting change
 };
 
 
-if ((missionNamespace isnil "EXP_HudEnabled")) then {	
+if ((missionNamespace isnil "EXP_Hud")) then {	
 	if (((player getVariable "UiEnabled") == False)) then 
 	{
 		player setVariable ["UiEnabled", true];	
@@ -53,7 +53,7 @@ if ((missionNamespace isnil "EXP_HudEnabled")) then {
 }
 else 
 {
-	if (((missionNamespace getVariable "EXP_HudEnabled") == true) && ((player getVariable "UiEnabled") == False)) then 
+	if (((missionNamespace getVariable "EXP_Hud") == true) && ((player getVariable "UiEnabled") == False)) then 
 	{
 		player setVariable ["UiEnabled", true];	
 		//_layer1 = ["RscInterlacing"] call BIS_fnc_rscLayer; //0.13ms 	//|

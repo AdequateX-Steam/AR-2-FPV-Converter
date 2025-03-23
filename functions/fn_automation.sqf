@@ -237,25 +237,54 @@ Exp_fnc_targetSeek =
 	
 	
 	//probably make this user toggleable and check if player is within 1000m, and using isEqualTo
-	if (((count (lineIntersectsWith [(AGLToASL (positionCameraToWorld [0,0,0])), (ATLToASL _targetPos), Player ,(_thisArgs select 1) , true])) == 0) && {(!(terrainIntersectASL [((AGLToASL (positionCameraToWorld [0,0,0]))),((ATLToASL _targetPos))]))}) then 
+	if (missionnamespace isNil "EXP_TargetICON") then 
 	{
-		drawIcon3D 
-		[
-			"\a3\ui_f\data\IGUI\Cfg\Cursors\attack_ca.paa",
+		if (((count (lineIntersectsWith [(AGLToASL (positionCameraToWorld [0,0,0])), (ATLToASL _targetPos), Player ,(_thisArgs select 1) , true])) == 0) && {(!(terrainIntersectASL [((AGLToASL (positionCameraToWorld [0,0,0]))),((ATLToASL _targetPos))]))}) then 
+		{
+			drawIcon3D 
 			[
-			[1,0,0,1],
-			[1,0.87,0.55,1]
-			],
-			_targetPos,
-			2,
-			2, 
-			45, 
-			"Target", 
-			1, 
-			0.05, 
-			"PuristaSemiBold"
-		]; 	
+				"\a3\ui_f\data\IGUI\Cfg\Cursors\attack_ca.paa",
+				[
+				[1,0,0,1],
+				[1,0.87,0.55,1]
+				],
+				_targetPos,
+				2,
+				2, 
+				45, 
+				"Target", 
+				1, 
+				0.05, 
+				"PuristaSemiBold"
+			]; 	
+		};
+	}
+	else 
+	{
+		if ((missionnamespace getVariable "EXP_TargetICON")) then 
+		{
+			if (((count (lineIntersectsWith [(AGLToASL (positionCameraToWorld [0,0,0])), (ATLToASL _targetPos), Player ,(_thisArgs select 1) , true])) == 0) && {(!(terrainIntersectASL [((AGLToASL (positionCameraToWorld [0,0,0]))),((ATLToASL _targetPos))]))}) then 
+			{
+				drawIcon3D 
+				[
+					"\a3\ui_f\data\IGUI\Cfg\Cursors\attack_ca.paa",
+					[
+					[1,0,0,1],
+					[1,0.87,0.55,1]
+					],
+					_targetPos,
+					2,
+					2, 
+					45, 
+					"Target", 
+					1, 
+					0.05, 
+					"PuristaSemiBold"
+				]; 	
+			};				
+		};	
 	};
+
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -408,6 +437,7 @@ _mapEHID = addMissionEventHandler ["Map",
 ///////////////////////////////////////////////////////////////
 ////////////////		Main Script		///////////////////////
 ///////////////////////////////////////////////////////////////
+if ((!(missionNamespace isNil "EXP_Automation")) && (!(missionNamespace getVariable "EXP_Automation"))) exitWith {hint "Drone automatic targeting mode is disabled"};
 createDialog "target_Override";
 waitUntil {!isNull (findDisplay 1116)};
 (findDisplay 1116) setVariable ["ExP_droneOBJ", _droneObject];

@@ -1,7 +1,16 @@
 params["_warhead"];
-_maxMass = 300; //adjust this setting for the maximum allowable Mass desired
 
-/* Mass of vanilla A3 explosives
+_maxMass = 300;//adjust this setting for the maximum allowable Mass desired (NO CBA_A3)
+
+if (!(missionNamespace isNil "EXP_Mass")) then 
+{
+	_maxmass = ((missionNamespace getVariable "EXP_Mass") * 10); //if CBA_A3 is installed
+};
+
+
+
+/* 
+Mass of vanilla A3 explosives:
 	Titan AA/AT, vorona heat+he = 100
 	satchel, nlaw, IED big, AT mine = 80
 	titan ap, rpg 32 heat, maaws 75, apers dispenser = 60
@@ -11,45 +20,44 @@ _maxMass = 300; //adjust this setting for the maximum allowable Mass desired
 	grenade, apers step mine = 10
 	
 RHS:
-
-fgm 148 javelin = 286.88
-fgm 172 sraw = 140.8
-fim 92 stinger = 120
-igla 9k32 & 38 = 100
-m80 = 31.24
-ec 75 = 10.45
-ec 200 = 13.2
-ec 400 = 17.6
-m2 tet = 25
-maaws he = 68.36
-	heat = 88.2
-	hedp = 72.77
-smaw heaa = 136.4
-	hedp = 129.8
-m2a3b = 40
-m3 = 60
-m7a2 = 48.4
-mk2 = 13.09
-ozm72 = 55
-pmn2 = 9.24
-smine = 80
-stockmine = 44
-tm43 = 100
-tm62 = 104.5
-rpg og7v = 28.6
-	pg7v = 31.46
-	pg7vl = 37.18
-	pg7vm = 31.46
-	pg7vr = 64.35
-	pg7vs = 28.6
-	tbg7v = 64.35
-	type69 airburst = 28.6
-tm100 = 3.3
-	200 = 6.6
-	500 = 14.3
-tma4 = 69.3
-pma3 = 3.96
-mrud = 48.4
+	fgm 148 javelin = 286.88
+	fgm 172 sraw = 140.8
+	fim 92 stinger = 120
+	igla 9k32 & 38 = 100
+	m80 = 31.24
+	ec 75 = 10.45
+	ec 200 = 13.2
+	ec 400 = 17.6
+	m2 tet = 25
+	maaws he = 68.36
+		heat = 88.2
+		hedp = 72.77
+	smaw heaa = 136.4
+		hedp = 129.8
+	m2a3b = 40
+	m3 = 60
+	m7a2 = 48.4
+	mk2 = 13.09
+	ozm72 = 55
+	pmn2 = 9.24
+	smine = 80
+	stockmine = 44
+	tm43 = 100
+	tm62 = 104.5
+	rpg og7v = 28.6
+		pg7v = 31.46
+		pg7vl = 37.18
+		pg7vm = 31.46
+		pg7vr = 64.35
+		pg7vs = 28.6
+		tbg7v = 64.35
+		type69 airburst = 28.6
+	tm100 = 3.3
+		200 = 6.6
+		500 = 14.3
+	tma4 = 69.3
+	pma3 = 3.96
+	mrud = 48.4
 */
 
 
