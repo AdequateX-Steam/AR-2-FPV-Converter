@@ -18,5 +18,8 @@ class Exp {
 				postInit = 1;
 			};
 			class hudHandler{};
+			class Warlords_CFG {
+				postInit = 1;
+			};
 	};
 };

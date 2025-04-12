@@ -11,21 +11,8 @@ if (hasInterface) then  //Run on all players + SP host
 					[_staticWeapon] spawn Exp_fnc_droneConverter;
 				};
 			}];
-/* 	//old Hud handling				
-			player addEventHandler ["Respawn", 
-			{
-				params ["_unit", "_corpse"];
-				[] spawn Exp_fnc_showHUD;
-			}];
-			
-			Player addEventHandler ["Killed", 
-			{
-				params ["_unit", "_killer", "_instigator", "_useEffects"];
-				isNil {[] spawn Exp_fnc_removeHud};  //either spawn only, or isnil call code for unscheduled environment
-			}]; */
-			
-			
-			
+
+						
 		///for UI handling	
 			addMissionEventHandler ["PlayerViewChanged",
 			{
@@ -46,9 +33,6 @@ if (hasInterface) then  //Run on all players + SP host
 					[] spawn Exp_fnc_hudHandler;
 				};
 			}];  
-
 			
-			
-/* 			[] spawn Exp_fnc_showHUD;		 */
 			
 };

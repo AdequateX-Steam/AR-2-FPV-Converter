@@ -2,9 +2,7 @@
 1) bug fixes
 2) random sounds on detonation? "playSound", "playSound3D" (phonk walk, hehe boy, surprise motherfucker, sanic, samir your crashing the car, im dying help me, click noice, metal gear alert sound, gotcha bitch) https://www.myinstants.com/en/search/?name=samir
 3) new drone engine sounds
-4) removed deprecated code
 5) laser pointer from RPG warhead to indicate impact point? drawLine3D, oneachframe, getposATL droneobject, eyepos, weapondirection, ASLToAGL, weaponsturret, currentweapon, getcameraviewdirection
-6)onEachFrame { drawLine3D [ASLToAGL eyePos player, cursorObject, [1,0,0,1], 5];};
  */
 class CfgPatches
 {
@@ -13,7 +11,7 @@ class CfgPatches
 		name = "fpvConverter";
 		author = "AdequateX";
 		requiredVersion= 1.60;
-		requiredAddons[] = {"A3_Ui_F", "A3_Ui_F_Data", "A3_Drones_F", "A3_weapons_f", "A3_weapons_f_beta"};
+		requiredAddons[] = {"A3_Ui_F", "A3_Ui_F_Data", "A3_Drones_F", "A3_weapons_f", "A3_weapons_f_beta", "A3_missions_f_warlords"};
 		units[] = {"B_FPV_AR2", "O_FPV_AR2", "I_FPV_AR2", "B_FPVAR2_backpack_F", "O_FPVAR2_backpack_F", "I_FPVAR2_backpack_F"};
 		weapons[] = {"fpvRocket","fpvGrenade"};
 	};
@@ -707,4 +705,1858 @@ class CfgVehicles {
 			assembleTo = "I_FPV_AR2";
 		};
 	};
+	
+	
+///////////////////////////////////// DRONE CRATES (for warlords) ////////////////////////////////////////////
+	class Box_NATO_AmmoVeh_F;
+	class Box_NATO_FPV : Box_NATO_AmmoVeh_F
+	{
+		author = "AdequateX";
+		mapSize = 1.53;
+		class SimpleObject
+		{
+			eden = 1;
+			animate[] = {};
+			hide[] = {};
+			verticalOffset = 0.79;
+			verticalOffsetWorld = 0;
+			init = "''";
+		};
+		maximumLoad = 3000;
+		editorPreview = "\A3\EditorPreviews_F\Data\CfgVehicles\Box_NATO_AmmoVeh_F.jpg";
+		_generalMacro = "Box_NATO_FPV";
+		scope = 2;
+		displayName = "(8X) FPV drone crate [NATO]";
+		model = "A3\Weapons_F\Ammoboxes\AmmoVeh_F";
+		icon = "iconCrateVeh";
+		slingLoadCargoMemoryPoints[] = {"SlingLoadCargo1","SlingLoadCargo2","SlingLoadCargo3","SlingLoadCargo4"};
+		hiddenSelectionsTextures[] = {"A3\Weapons_F\Ammoboxes\data\AmmoBox_signs_CA.paa","A3\Weapons_F\Ammoboxes\data\AmmoVeh_CO.paa"};
+		class TransportMagazines
+		{
+			class _xx_RPG32_F 
+			{
+				magazine = "RPG32_F";
+				count = 2;
+			};
+			class _xx_RPG32_HE_F
+			{
+				magazine= "RPG32_HE_F";
+				count = 2;
+			};
+			class _xx_ClaymoreDirectionalMine_Remote_Mag
+			{
+				magazine = "ClaymoreDirectionalMine_Remote_Mag";
+				count = 2;
+			};
+			class _xx_RPG7_F
+			{
+				magazine = "RPG7_F";
+				count = 2;
+			};			
+		};
+		class TransportWeapons{};
+		class TransportItems 
+		{
+			class _xx_B_UavTerminal 
+			{
+				name = "B_UavTerminal";
+				count = 4;				
+			};
+			
+		};
+		class TransportBackpacks
+		{
+			class B_FPVAR2_backpack_F 
+			{
+				backpack = "B_FPVAR2_backpack_F";
+				count = 8;
+			};
+			class _xx_B_AssaultPack_blk 
+			{
+				backpack = "B_AssaultPack_blk";
+				count = 2;
+			};
+		};
+		transportAmmo = 0;
+		supplyRadius = 0;		
+	};
+	class Box_East_FPV : Box_NATO_FPV
+	{
+		author = "AdequateX";
+		mapSize = 1.53;
+		class SimpleObject
+		{
+			eden = 1;
+			animate[] = {};
+			hide[] = {};
+			verticalOffset = 0.79;
+			verticalOffsetWorld = 0;
+			init = "''";
+		};
+		maximumLoad = 3000;
+		editorPreview = "\A3\EditorPreviews_F\Data\CfgVehicles\Box_East_AmmoVeh_F.jpg";
+		_generalMacro = "Box_East_FPV";
+		scope = 2;
+		displayName = "(8X) FPV drone crate [CSAT]";
+		model = "A3\Weapons_F\Ammoboxes\AmmoVeh_F";
+		icon = "iconCrateVeh";
+		slingLoadCargoMemoryPoints[] = {"SlingLoadCargo1","SlingLoadCargo2","SlingLoadCargo3","SlingLoadCargo4"};
+		hiddenSelectionsTextures[] = {"A3\Weapons_F\Ammoboxes\data\AmmoBox_signs_OPFOR_CA.paa","A3\Weapons_F\Ammoboxes\data\AmmoVeh_OPFOR_CO.paa"};
+		class TransportMagazines
+		{
+			class _xx_RPG32_F 
+			{
+				magazine = "RPG32_F";
+				count = 2;
+			};
+			class _xx_RPG32_HE_F
+			{
+				magazine= "RPG32_HE_F";
+				count = 2;
+			};
+			class _xx_ClaymoreDirectionalMine_Remote_Mag
+			{
+				magazine = "ClaymoreDirectionalMine_Remote_Mag";
+				count = 2;
+			};
+			class _xx_RPG7_F
+			{
+				magazine = "RPG7_F";
+				count = 2;
+			};	
+		};
+		class TransportWeapons{};
+		class TransportItems 
+		{
+			class _xx_O_UavTerminal
+			{
+				name = "O_UavTerminal";
+				count = 4;			
+			};		
+		};
+		class TransportBackpacks
+		{
+			class _xx_O_FPVAR2_backpack_F 
+			{
+				backpack = "O_FPVAR2_backpack_F";
+				count = 8;
+			};
+			class _xx_B_AssaultPack_blk 
+			{
+				backpack = "B_AssaultPack_blk";
+				count = 2;
+			};
+		};
+		transportAmmo = 0;
+		supplyRadius = 0;		
+	};
+	
+	
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//enableDebugConsole = 2; ///FOR TESTING ONLY DELETE OR COMMENT OUT AFTER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+////////////////////////////////////////////////////// ALTERED WARLORDS CONFIG (uneeded) ////////////////////////////////////////////////////////////////////////
+
+
+
+/* class CfgWLRequisitionPresets
+{
+	class A3DefaultAll
+	{
+		class WEST
+		{
+			class Infantry
+			{
+				class B_Soldier_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class B_crew_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class B_Helipilot_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class B_Pilot_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class B_Soldier_GL_F
+				{
+					cost = 125;
+					requirements[] = {};
+				};
+				class B_medic_F
+				{
+					cost = 125;
+					requirements[] = {};
+				};
+				class B_soldier_AR_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class B_Soldier_A_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class B_soldier_M_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class B_soldier_repair_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+				class B_HeavyGunner_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+				class B_soldier_LAT_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class B_soldier_LAT2_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+				class B_soldier_AT_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+				class B_soldier_AA_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+				class B_Sharpshooter_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+				class B_sniper_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+			};
+			class Vehicles
+			{
+				class B_Quadbike_01_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class B_LSV_01_unarmed_F
+				{
+					cost = 350;
+					requirements[] = {};
+				};
+				class B_MRAP_01_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class B_Truck_01_transport_F
+				{
+					cost = 650;
+					requirements[] = {};
+				};
+				class B_Truck_01_fuel_F
+				{
+					cost = 750;
+					requirements[] = {};
+				};
+				class B_Truck_01_medical_F
+				{
+					cost = 750;
+					requirements[] = {};
+				};
+				class B_LSV_01_armed_F
+				{
+					cost = 1000;
+					requirements[] = {};
+				};
+				class B_LSV_01_AT_F
+				{
+					cost = 1250;
+					requirements[] = {};
+				};
+				class B_MRAP_01_hmg_F
+				{
+					cost = 1400;
+					requirements[] = {};
+				};
+				class B_Truck_01_Repair_F
+				{
+					cost = 1500;
+					requirements[] = {};
+				};
+				class B_MRAP_01_gmg_F
+				{
+					cost = 1600;
+					requirements[] = {};
+				};
+				class B_Truck_01_ammo_F
+				{
+					cost = 3000;
+					requirements[] = {};
+				};
+				class B_APC_Wheeled_01_cannon_F
+				{
+					cost = 3000;
+					requirements[] = {};
+				};
+				class B_APC_Tracked_01_rcws_F
+				{
+					cost = 3500;
+					requirements[] = {};
+				};
+				class B_APC_Tracked_01_AA_F
+				{
+					cost = 4000;
+					requirements[] = {};
+				};
+				class B_MBT_01_cannon_F
+				{
+					cost = 5000;
+					requirements[] = {};
+				};
+				class B_MBT_01_TUSK_F
+				{
+					cost = 5500;
+					requirements[] = {};
+				};
+				class B_AFV_Wheeled_01_cannon_F
+				{
+					cost = 7000;
+					requirements[] = {};
+				};
+				class B_AFV_Wheeled_01_up_cannon_F
+				{
+					cost = 7500;
+					requirements[] = {};
+				};
+			};
+			class Aircraft
+			{
+				class B_Heli_Light_01_F
+				{
+					cost = 1000;
+					requirements[] = {"H"};
+				};
+				class B_Heli_Light_01_dynamicLoadout_F
+				{
+					cost = 2500;
+					requirements[] = {"H"};
+				};
+				class B_Heli_Transport_01_F
+				{
+					cost = 3000;
+					requirements[] = {"H"};
+				};
+				class B_Heli_Transport_03_F
+				{
+					cost = 4500;
+					requirements[] = {"H"};
+				};
+				class B_Heli_Attack_01_dynamicLoadout_F
+				{
+					cost = 6000;
+					requirements[] = {"H"};
+				};
+				class B_T_VTOL_01_armed_F
+				{
+					cost = 9000;
+					requirements[] = {"H"};
+				};
+				class B_Plane_CAS_01_dynamicLoadout_F
+				{
+					cost = 10500;
+					requirements[] = {"A"};
+				};
+				class B_Plane_Fighter_01_F
+				{
+					cost = 13500;
+					requirements[] = {"A"};
+				};
+			};
+			class Naval
+			{
+				class B_Boat_Transport_01_F
+				{
+					cost = 100;
+					requirements[] = {"W"};
+				};
+				class B_Boat_Armed_01_minigun_F
+				{
+					cost = 750;
+					requirements[] = {"W"};
+				};
+				class B_SDV_01_F
+				{
+					cost = 900;
+					requirements[] = {"W"};
+				};
+			};
+			class Gear
+			{
+				class Box_NATO_FPV
+				{
+					cost = 450;
+					requirements[] = {};				
+				};
+				class Box_NATO_Ammo_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+				class Box_NATO_Grenades_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+				class Box_NATO_Wps_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class Box_NATO_AmmoOrd_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class Box_NATO_WpsLaunch_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+				class Box_NATO_WpsSpecial_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class B_supplyCrate_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class Box_NATO_AmmoVeh_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+			};
+			class Defences
+			{
+				class B_HMG_01_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class B_HMG_01_high_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class B_GMG_01_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class B_GMG_01_high_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class B_HMG_01_A_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class B_GMG_01_A_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class B_static_AA_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class B_static_AT_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class B_SAM_System_03_F
+				{
+					cost = 27500;
+					requirements[] = {};
+					offset[] = {0,5.3,0};
+				};
+				class B_Radar_System_01_F
+				{
+					cost = 8500;
+					requirements[] = {};
+					offset[] = {0,5.3,0};
+				};
+			};
+		};
+		class EAST
+		{
+			class Infantry
+			{
+				class O_Soldier_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class O_crew_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class O_Helipilot_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class O_Pilot_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class O_Soldier_GL_F
+				{
+					cost = 125;
+					requirements[] = {};
+				};
+				class O_medic_F
+				{
+					cost = 125;
+					requirements[] = {};
+				};
+				class O_soldier_AR_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class O_Soldier_A_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class O_soldier_M_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class O_soldier_repair_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+				class O_HeavyGunner_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+				class O_soldier_LAT_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class O_soldier_AT_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+				class O_Soldier_AA_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+				class O_Sharpshooter_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+				class O_sniper_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+				class O_soldier_HAT_F
+				{
+					cost = 350;
+					requirements[] = {};
+				};
+			};
+			class Vehicles
+			{
+				class O_Quadbike_01_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class O_LSV_02_unarmed_F
+				{
+					cost = 350;
+					requirements[] = {};
+				};
+				class O_MRAP_02_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class O_Truck_03_transport_F
+				{
+					cost = 650;
+					requirements[] = {};
+				};
+				class O_Truck_03_Fuel_F
+				{
+					cost = 750;
+					requirements[] = {};
+				};
+				class O_Truck_03_medical_F
+				{
+					cost = 750;
+					requirements[] = {};
+				};
+				class O_LSV_02_armed_F
+				{
+					cost = 1000;
+					requirements[] = {};
+				};
+				class O_LSV_02_AT_F
+				{
+					cost = 1250;
+					requirements[] = {};
+				};
+				class O_MRAP_02_hmg_F
+				{
+					cost = 1400;
+					requirements[] = {};
+				};
+				class O_Truck_03_Repair_F
+				{
+					cost = 1500;
+					requirements[] = {};
+				};
+				class O_MRAP_02_gmg_F
+				{
+					cost = 1600;
+					requirements[] = {};
+				};
+				class O_Truck_03_ammo_F
+				{
+					cost = 3000;
+					requirements[] = {};
+				};
+				class O_APC_Wheeled_02_rcws_v2_F
+				{
+					cost = 3000;
+					requirements[] = {};
+				};
+				class O_APC_Tracked_02_cannon_F
+				{
+					cost = 3500;
+					requirements[] = {};
+				};
+				class O_APC_Tracked_02_AA_F
+				{
+					cost = 4000;
+					requirements[] = {};
+				};
+				class O_MBT_02_cannon_F
+				{
+					cost = 5500;
+					requirements[] = {};
+				};
+				class O_MBT_04_cannon_F
+				{
+					cost = 6500;
+					requirements[] = {};
+				};
+				class O_MBT_04_command_F
+				{
+					cost = 7500;
+					requirements[] = {};
+				};
+			};
+			class Aircraft
+			{
+				class O_Heli_Light_02_unarmed_F
+				{
+					cost = 1500;
+					requirements[] = {"H"};
+				};
+				class O_Heli_Light_02_dynamicLoadout_F
+				{
+					cost = 2500;
+					requirements[] = {"H"};
+				};
+				class O_Heli_Transport_04_F
+				{
+					cost = 2750;
+					requirements[] = {"H"};
+				};
+				class O_Heli_Transport_04_covered_F
+				{
+					cost = 3000;
+					requirements[] = {"H"};
+				};
+				class O_Heli_Attack_02_dynamicLoadout_F
+				{
+					cost = 6000;
+					requirements[] = {"H"};
+				};
+				class O_T_VTOL_02_infantry_dynamicLoadout_F
+				{
+					cost = 7000;
+					requirements[] = {"H"};
+				};
+				class O_Plane_CAS_02_dynamicLoadout_F
+				{
+					cost = 10500;
+					requirements[] = {"A"};
+				};
+				class O_Plane_Fighter_02_F
+				{
+					cost = 13500;
+					requirements[] = {"A"};
+				};
+			};
+			class Naval
+			{
+				class O_Boat_Transport_01_F
+				{
+					cost = 100;
+					requirements[] = {"W"};
+				};
+				class O_Boat_Armed_01_hmg_F
+				{
+					cost = 750;
+					requirements[] = {"W"};
+				};
+				class O_SDV_01_F
+				{
+					cost = 900;
+					requirements[] = {"W"};
+				};
+			};
+			class Gear
+			{
+				class Box_NATO_FPV
+				{
+					cost = 450;
+					requirements[] = {};				
+				};
+				class Box_East_Ammo_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+				class Box_East_Grenades_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+				class Box_East_Wps_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class Box_East_AmmoOrd_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class Box_East_WpsLaunch_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+				class Box_East_WpsSpecial_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class O_supplyCrate_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class Box_East_AmmoVeh_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+			};
+			class Defences
+			{
+				class O_HMG_01_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class O_HMG_01_high_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class O_GMG_01_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class O_GMG_01_high_F
+				{
+					cost = 250;
+					requirements[] = {};
+				};
+				class O_HMG_01_A_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class O_GMG_01_A_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class O_static_AA_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class O_static_AT_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class O_SAM_System_04_F
+				{
+					cost = 27500;
+					requirements[] = {};
+					offset[] = {0,5.3,0};
+				};
+				class O_Radar_System_02_F
+				{
+					cost = 8500;
+					requirements[] = {};
+					offset[] = {0,5.3,0};
+				};
+			};
+		};
+	};
+	class A3DefaultInfantry: A3DefaultAll
+	{
+		class WEST: WEST
+		{
+			class Infantry: Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry: Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+	};
+	class A3DefaultVehicles: A3DefaultAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles: Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles: Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+	};
+	class A3DefaultAircraft: A3DefaultAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft: Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft: Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+	};
+	class A3DefaultNaval: A3DefaultAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval: Naval{};
+			class Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval: Naval{};
+			class Gear{};
+			class Defences{};
+		};
+	};
+	class A3DefaultGear: A3DefaultAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear: Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear: Gear{};
+			class Defences{};
+		};
+	};
+	class A3DefaultDefences: A3DefaultAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences: Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences: Defences{};
+		};
+	};
+	class A3PacificAll: A3DefaultAll
+	{
+		class WEST: WEST
+		{
+			class Infantry
+			{
+				class B_T_Soldier_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class B_T_crew_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class B_T_Helipilot_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class B_T_Pilot_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class B_T_Soldier_GL_F
+				{
+					cost = 125;
+					requirements[] = {};
+				};
+				class B_T_medic_F
+				{
+					cost = 125;
+					requirements[] = {};
+				};
+				class B_T_soldier_AR_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class B_T_Soldier_A_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class B_T_soldier_M_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class B_T_soldier_repair_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+				class B_T_soldier_LAT_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+				class B_T_soldier_AA_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+				class B_sniper_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+			};
+			class Vehicles
+			{
+				class B_T_Quadbike_01_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class B_T_LSV_01_unarmed_F
+				{
+					cost = 350;
+					requirements[] = {};
+				};
+				class B_T_MRAP_01_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class B_T_Truck_01_transport_F
+				{
+					cost = 650;
+					requirements[] = {};
+				};
+				class B_T_Truck_01_fuel_F
+				{
+					cost = 750;
+					requirements[] = {};
+				};
+				class B_T_Truck_01_medical_F
+				{
+					cost = 750;
+					requirements[] = {};
+				};
+				class B_T_LSV_01_armed_F
+				{
+					cost = 1000;
+					requirements[] = {};
+				};
+				class B_T_LSV_01_AT_F
+				{
+					cost = 1250;
+					requirements[] = {};
+				};
+				class B_T_MRAP_01_hmg_F
+				{
+					cost = 1400;
+					requirements[] = {};
+				};
+				class B_T_Truck_01_Repair_F
+				{
+					cost = 1500;
+					requirements[] = {};
+				};
+				class B_T_MRAP_01_gmg_F
+				{
+					cost = 1600;
+					requirements[] = {};
+				};
+				class B_T_Truck_01_ammo_F
+				{
+					cost = 3000;
+					requirements[] = {};
+				};
+				class B_T_APC_Wheeled_01_cannon_F
+				{
+					cost = 3000;
+					requirements[] = {};
+				};
+				class B_T_APC_Tracked_01_rcws_F
+				{
+					cost = 3500;
+					requirements[] = {};
+				};
+				class B_T_APC_Tracked_01_AA_F
+				{
+					cost = 4000;
+					requirements[] = {};
+				};
+				class B_T_AFV_Wheeled_01_cannon_F
+				{
+					cost = 4000;
+					requirements[] = {};
+				};
+				class B_T_MBT_01_cannon_F
+				{
+					cost = 5000;
+					requirements[] = {};
+				};
+			};
+			class Aircraft: Aircraft{};
+			class Naval: Naval{};
+			class Gear: Gear{};
+			class Defences: Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry
+			{
+				class O_T_Soldier_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class O_T_crew_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class O_T_Helipilot_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class O_T_Pilot_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class O_T_Soldier_GL_F
+				{
+					cost = 125;
+					requirements[] = {};
+				};
+				class O_T_medic_F
+				{
+					cost = 125;
+					requirements[] = {};
+				};
+				class O_T_soldier_AR_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class O_T_Soldier_A_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class O_T_soldier_M_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class O_T_soldier_repair_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+				class O_T_soldier_LAT_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+				class O_T_Soldier_AA_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+				class O_sniper_F
+				{
+					cost = 300;
+					requirements[] = {};
+				};
+			};
+			class Vehicles
+			{
+				class O_T_Quadbike_01_ghex_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class O_T_LSV_02_unarmed_F
+				{
+					cost = 350;
+					requirements[] = {};
+				};
+				class O_T_MRAP_02_ghex_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class O_T_Truck_03_transport_ghex_F
+				{
+					cost = 650;
+					requirements[] = {};
+				};
+				class O_T_Truck_03_Fuel_ghex_F
+				{
+					cost = 750;
+					requirements[] = {};
+				};
+				class O_T_Truck_03_medical_ghex_F
+				{
+					cost = 750;
+					requirements[] = {};
+				};
+				class O_T_LSV_02_armed_F
+				{
+					cost = 1000;
+					requirements[] = {};
+				};
+				class O_T_LSV_02_AT_F
+				{
+					cost = 1250;
+					requirements[] = {};
+				};
+				class O_T_MRAP_02_hmg_ghex_F
+				{
+					cost = 1400;
+					requirements[] = {};
+				};
+				class O_T_Truck_03_Repair_ghex_F
+				{
+					cost = 1500;
+					requirements[] = {};
+				};
+				class O_T_MRAP_02_gmg_ghex_F
+				{
+					cost = 1600;
+					requirements[] = {};
+				};
+				class O_T_Truck_03_ammo_ghex_F
+				{
+					cost = 3000;
+					requirements[] = {};
+				};
+				class O_T_APC_Wheeled_02_rcws_v2_ghex_F
+				{
+					cost = 3000;
+					requirements[] = {};
+				};
+				class O_T_APC_Tracked_02_cannon_ghex_F
+				{
+					cost = 3500;
+					requirements[] = {};
+				};
+				class O_T_APC_Tracked_02_AA_ghex_F
+				{
+					cost = 4000;
+					requirements[] = {};
+				};
+				class O_T_MBT_02_cannon_ghex_F
+				{
+					cost = 5000;
+					requirements[] = {};
+				};
+				class O_T_MBT_04_cannon_F
+				{
+					cost = 6000;
+					requirements[] = {};
+				};
+			};
+			class Aircraft: Aircraft{};
+			class Naval: Naval{};
+			class Gear: Gear{};
+			class Defences: Defences{};
+		};
+	};
+	class A3PacificInfantry: A3PacificAll
+	{
+		class WEST: WEST
+		{
+			class Infantry: Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry: Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+	};
+	class A3PacificVehicles: A3PacificAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles: Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles: Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+	};
+	class A3PacificAircraft: A3PacificAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft: Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft: Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+	};
+	class A3PacificNaval: A3PacificAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval: Naval{};
+			class Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval: Naval{};
+			class Gear{};
+			class Defences{};
+		};
+	};
+	class A3PacificGear: A3PacificAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear: Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear: Gear{};
+			class Defences{};
+		};
+	};
+	class A3PacificDefences: A3PacificAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences: Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences: Defences{};
+		};
+	};
+	class A3WoodlandAll: A3DefaultAll
+	{
+		class WEST: WEST
+		{
+			class Infantry
+			{
+				class B_W_Soldier_GL_F
+				{
+					cost = 125;
+					requirements[] = {};
+				};
+				class B_W_medic_F
+				{
+					cost = 125;
+					requirements[] = {};
+				};
+				class B_W_soldier_AR_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class B_W_soldier_M_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class B_W_soldier_LAT_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+			};
+			class Vehicles
+			{
+				class B_T_Quadbike_01_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class B_T_LSV_01_unarmed_F
+				{
+					cost = 350;
+					requirements[] = {};
+				};
+				class B_T_MRAP_01_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class B_T_Truck_01_transport_F
+				{
+					cost = 650;
+					requirements[] = {};
+				};
+				class B_T_Truck_01_fuel_F
+				{
+					cost = 750;
+					requirements[] = {};
+				};
+				class B_T_Truck_01_medical_F
+				{
+					cost = 750;
+					requirements[] = {};
+				};
+				class B_T_LSV_01_armed_F
+				{
+					cost = 1000;
+					requirements[] = {};
+				};
+				class B_T_LSV_01_AT_F
+				{
+					cost = 1250;
+					requirements[] = {};
+				};
+				class B_T_MRAP_01_hmg_F
+				{
+					cost = 1400;
+					requirements[] = {};
+				};
+				class B_T_Truck_01_Repair_F
+				{
+					cost = 1500;
+					requirements[] = {};
+				};
+				class B_T_MRAP_01_gmg_F
+				{
+					cost = 1600;
+					requirements[] = {};
+				};
+				class B_T_Truck_01_ammo_F
+				{
+					cost = 3000;
+					requirements[] = {};
+				};
+				class B_T_APC_Wheeled_01_cannon_F
+				{
+					cost = 3000;
+					requirements[] = {};
+				};
+				class B_T_APC_Tracked_01_rcws_F
+				{
+					cost = 3500;
+					requirements[] = {};
+				};
+				class B_T_APC_Tracked_01_AA_F
+				{
+					cost = 4000;
+					requirements[] = {};
+				};
+				class B_T_AFV_Wheeled_01_cannon_F
+				{
+					cost = 4000;
+					requirements[] = {};
+				};
+				class B_T_MBT_01_cannon_F
+				{
+					cost = 5000;
+					requirements[] = {};
+				};
+			};
+			class Aircraft: Aircraft{};
+			class Naval: Naval{};
+			class Gear: Gear{};
+			class Defences: Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry
+			{
+				class O_R_Soldier_GL_F
+				{
+					cost = 125;
+					requirements[] = {};
+				};
+				class O_R_medic_F
+				{
+					cost = 125;
+					requirements[] = {};
+				};
+				class O_R_soldier_AR_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class O_R_soldier_M_F
+				{
+					cost = 150;
+					requirements[] = {};
+				};
+				class O_R_soldier_LAT_F
+				{
+					cost = 200;
+					requirements[] = {};
+				};
+			};
+			class Vehicles
+			{
+				class O_T_Quadbike_01_ghex_F
+				{
+					cost = 100;
+					requirements[] = {};
+				};
+				class O_T_LSV_02_unarmed_F
+				{
+					cost = 350;
+					requirements[] = {};
+				};
+				class O_T_MRAP_02_ghex_F
+				{
+					cost = 500;
+					requirements[] = {};
+				};
+				class O_T_Truck_03_transport_ghex_F
+				{
+					cost = 650;
+					requirements[] = {};
+				};
+				class O_T_Truck_03_Fuel_ghex_F
+				{
+					cost = 750;
+					requirements[] = {};
+				};
+				class O_T_Truck_03_medical_ghex_F
+				{
+					cost = 750;
+					requirements[] = {};
+				};
+				class O_T_LSV_02_armed_F
+				{
+					cost = 1000;
+					requirements[] = {};
+				};
+				class O_T_LSV_02_AT_F
+				{
+					cost = 1250;
+					requirements[] = {};
+				};
+				class O_T_MRAP_02_hmg_ghex_F
+				{
+					cost = 1400;
+					requirements[] = {};
+				};
+				class O_T_Truck_03_Repair_ghex_F
+				{
+					cost = 1500;
+					requirements[] = {};
+				};
+				class O_T_MRAP_02_gmg_ghex_F
+				{
+					cost = 1600;
+					requirements[] = {};
+				};
+				class O_T_Truck_03_ammo_ghex_F
+				{
+					cost = 3000;
+					requirements[] = {};
+				};
+				class O_T_APC_Wheeled_02_rcws_v2_ghex_F
+				{
+					cost = 3000;
+					requirements[] = {};
+				};
+				class O_T_APC_Tracked_02_cannon_ghex_F
+				{
+					cost = 3500;
+					requirements[] = {};
+				};
+				class O_T_APC_Tracked_02_AA_ghex_F
+				{
+					cost = 4000;
+					requirements[] = {};
+				};
+				class O_T_MBT_02_cannon_ghex_F
+				{
+					cost = 5000;
+					requirements[] = {};
+				};
+				class O_T_MBT_04_cannon_F
+				{
+					cost = 6000;
+					requirements[] = {};
+				};
+			};
+			class Aircraft: Aircraft{};
+			class Naval: Naval{};
+			class Gear: Gear{};
+			class Defences: Defences{};
+		};
+	};
+	class A3WoodlandInfantry: A3WoodlandAll
+	{
+		class WEST: WEST
+		{
+			class Infantry: Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry: Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+	};
+	class A3WoodlandVehicles: A3WoodlandAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles: Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles: Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+	};
+	class A3WoodlandAircraft: A3WoodlandAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft: Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft: Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences{};
+		};
+	};
+	class A3WoodlandNaval: A3WoodlandAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval: Naval{};
+			class Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval: Naval{};
+			class Gear{};
+			class Defences{};
+		};
+	};
+	class A3WoodlandGear: A3WoodlandAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear: Gear{};
+			class Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear: Gear{};
+			class Defences{};
+		};
+	};
+	class A3WoodlandDefences: A3WoodlandAll
+	{
+		class WEST: WEST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences: Defences{};
+		};
+		class EAST: EAST
+		{
+			class Infantry{};
+			class Vehicles{};
+			class Aircraft{};
+			class Naval{};
+			class Gear{};
+			class Defences: Defences{};
+		};
+	};
+}; */

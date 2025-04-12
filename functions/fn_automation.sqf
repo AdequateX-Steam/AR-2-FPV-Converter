@@ -27,7 +27,7 @@ EXP_fnc_wayPointTraversal =
 	_droneMarker1 setMarkerColor "ColorRed";
 	_droneMarker2 = createMarker [((str _droneObject) + "DroneSearchMarker"), _pos, 1, player];
 	_droneMarker2 setMarkerType "mil_objective_noShadow";
-	_droneMarker2 setMarkerText "Drone search area (200m radius)";
+	_droneMarker2 setMarkerText "Drone search area (250m radius)";
 	_droneMarker2 setMarkerColor "ColorBlack";
 	_droneMarker2 setMarkerAlpha 1;
 	_waypoint = group(_droneObject) addWaypoint [[_pos select 0,_pos select 1, 65], -1, 1];
@@ -110,7 +110,7 @@ params
 		if (_i != _preferredTargetType) then {_targetPriorityIndex pushBack _i;};
 	};
 	
-//Sort preferred target first, and then weighted targets next  [car,car,car,TANK,APC,APC,man,man,man,man]... WORKING
+//Sort preferred target first, and then weighted targets next  [car,car,car,TANK,APC,APC,man,man,man,man]...
 	{
 		private _xCurTargetIndex = _x; 
 		{
@@ -124,7 +124,7 @@ params
 		} foreach _enemyList;
 	} foreach _targetPriorityIndex;
 		
-//Find highest preferred targets if they exist and sort by distance (2nd half); else return to player. ... WORKING
+//Find highest preferred targets if they exist and sort by distance (2nd half); else return to player... 
 	{	
 		private _xForeach = _x;
 		_targetCount = ({_x isKindOf (_targetClass select _xForeach)} count _newList);
@@ -144,7 +144,7 @@ params
 			};	
 		};
 		
-		//Adjust flight height and return the found target...WORKING
+		//Adjust flight height and return the found target...
 		(_droneObject) flyInHeight [1, true];
 		_foundTarget = (_newList select _minDistanceIndex);
 		_foundTarget; //RETURN VARIABLE 
@@ -156,7 +156,7 @@ params
 	};
 };
 
-//Seeker Function to track and intercept target .... WORKING
+//Seeker Function to track and intercept target...
 Exp_fnc_targetSeek = 
 {
 	//INPUTS [_droneObject, _enemyTarget]
@@ -164,7 +164,7 @@ Exp_fnc_targetSeek =
 	//_enemyTarget = highest value target that is the closest
 	_droneObject = _this select 0;
 	_enemyTarget = _this select 1;
-	_interceptDistance = 0.3; //Distance before intercept is considered complete (default value)
+	_interceptDistance = 0.2; //Distance before intercept is considered complete (default value)
 	_interceptVelocity = [50, 50, 33]; //Top speed to accelerate to (m/s)
 	_targetCOM = getCenterOfMass _enemyTarget; //center of mass of target (only applicable to modelspace, needs to be translated using cos(dir) + sin(dir) for world space)
 	_startFrame = diag_frameNo;	//start of eachframeEH to compare against for furture time
@@ -233,35 +233,11 @@ Exp_fnc_targetSeek =
 		_distanceToTarget = _dronePos distance _futureTargetPos; //distance between drone and expected future pos of target
 		_vectorDiffDistance = (_dronePos vectorDiff _futureTargetPos);
 		
-		///////////////////////////////////   TEST POS ICON3D   ///////////////////////////////////////////////
+		///////////////////////////////////   Target Icon 3D   ///////////////////////////////////////////////
 	
 	
-	//probably make this user toggleable and check if player is within 1000m, and using isEqualTo
-	if (missionnamespace isNil "EXP_TargetICON") then 
-	{
-		if (((count (lineIntersectsWith [(AGLToASL (positionCameraToWorld [0,0,0])), (ATLToASL _targetPos), Player ,(_thisArgs select 1) , true])) == 0) && {(!(terrainIntersectASL [((AGLToASL (positionCameraToWorld [0,0,0]))),((ATLToASL _targetPos))]))}) then 
-		{
-			drawIcon3D 
-			[
-				"\a3\ui_f\data\IGUI\Cfg\Cursors\attack_ca.paa",
-				[
-				[1,0,0,1],
-				[1,0.87,0.55,1]
-				],
-				_targetPos,
-				2,
-				2, 
-				45, 
-				"Target", 
-				1, 
-				0.05, 
-				"PuristaSemiBold"
-			]; 	
-		};
-	}
-	else 
-	{
-		if ((missionnamespace getVariable "EXP_TargetICON")) then 
+		//probably check if player is within 1000m, and using isEqualTo
+		if (missionnamespace isNil "EXP_TargetICON") then 
 		{
 			if (((count (lineIntersectsWith [(AGLToASL (positionCameraToWorld [0,0,0])), (ATLToASL _targetPos), Player ,(_thisArgs select 1) , true])) == 0) && {(!(terrainIntersectASL [((AGLToASL (positionCameraToWorld [0,0,0]))),((ATLToASL _targetPos))]))}) then 
 			{
@@ -281,9 +257,33 @@ Exp_fnc_targetSeek =
 					0.05, 
 					"PuristaSemiBold"
 				]; 	
-			};				
-		};	
-	};
+			};
+		}
+		else 
+		{
+			if ((missionnamespace getVariable "EXP_TargetICON")) then 
+			{
+				if (((count (lineIntersectsWith [(AGLToASL (positionCameraToWorld [0,0,0])), (ATLToASL _targetPos), Player ,(_thisArgs select 1) , true])) == 0) && {(!(terrainIntersectASL [((AGLToASL (positionCameraToWorld [0,0,0]))),((ATLToASL _targetPos))]))}) then 
+				{
+					drawIcon3D 
+					[
+						"\a3\ui_f\data\IGUI\Cfg\Cursors\attack_ca.paa",
+						[
+						[1,0,0,1],
+						[1,0.87,0.55,1]
+						],
+						_targetPos,
+						2,
+						2, 
+						45, 
+						"Target", 
+						1, 
+						0.05, 
+						"PuristaSemiBold"
+					]; 	
+				};				
+			};	
+		};
 
 
 
@@ -362,7 +362,7 @@ Exp_fnc_targetSeek =
 		
 	},[_droneObject, _enemyTarget, _interceptDistance, _interceptVelocity, _targetCOM, _startFrame, _accelerationRateTime] ];
 	waitUntil {sleep 3; (!alive _droneObject)};
-	removeMissionEventHandler ["EachFrame", _targetingUpdate];
+	removeMissionEventHandler ["EachFrame", _targetingUpdate]; //failsafe
 };
 
 
@@ -473,7 +473,7 @@ waitUntil {!isNull (findDisplay 1116)};
 			_selection = ((findDisplay 1116 displayCtrl 1100) lbValue _cursorSel);
 			_droneObject setVariable ["EXP_targetType", _selection];
 			openMap [true, false];
-			hint "Select the search area (200m radius)";
+			hint "Select the search area (250m radius)";
 			closeDialog 1;
 		}
 		else 
@@ -513,95 +513,3 @@ addMissionEventHandler ["Draw3D", {
 }];
 
  */
-
-
-
-
-
-
-
-/*	
-////OLD! Enemy list code	
-// Get player's enemies
-	if ((side _droneObject getFriend west) < 0.6) then {_enemyList append (units west);};
-	if ((side _droneObject getFriend east) < 0.6) then {_enemyList append (units east);};
-	if ((side _droneObject getFriend independent) < 0.6) then {_enemyList append (units independent);};
-
-//Get enemies within range and reveal them for nearTargets
-	{
-		if ((_droneObject distance2D (getPosATL _x)) <= _radius) then //probably change _droneObject to marker pos
-		{
-			_droneObject reveal _x;
-			_droneObject reveal (vehicle _x);
-		};
-	} foreach (_enemyList);
-
-	//get full list of enemy units 'objects' here
-	_targetList = _droneObject nearTargets _radius; //[position (imprecise), targetType, side, subjectivecost, 'object', positionAccuracy] //performance hit 0.02ms
-	
-//Discard friendly units and air targets here...WORKING
-	_invalidTargets = [];
-	{
-		private _objType = (_x select 4);		
-		if (((_x select 2) isEqualTo (side _droneObject)) || (_objType isKindOf "Air")) then {_invalidTargets append [_forEachIndex];}; // == -> isEqualTo,  _targetList deleteat _forEachIndex; ->
-	} foreach _targetList;
-	if ((count _invalidTargets) > 0) then {_targetList deleteAt _invalidTargets};
-	
-	
-	
-	//Sets target priority weighting...	WORKING	
-	_targetPriorityIndex set [0, _preferredTargetType];  //[1,3,2,0], [2,3,1,0], [0,3,2,1]
-	for "_i" from 3 to 0 step -1 do 
-	{	
-		if (_i != _preferredTargetType) then {_targetPriorityIndex pushBack _i;};
-	};
-	
-//Sort preferred target first, and then weighted targets next  [car,car,car,TANK,APC,APC,man,man,man,man]... WORKING
-	{
-		private _xCurTargetIndex = _x; 
-		{
-			private _objType = (_x select 4);
-			if (_objType isKindOf (_targetClass select _xCurTargetIndex)) then 
-			{
-				if ((_xCurTargetIndex == 1) && {(_objType isKindOf "Wheeled_APC_F")}) exitWith {}; //if car/truck/mrap is selected with higher priority, dont include APCs that are also considered 'cars'
-				if ((_xCurTargetIndex == 0) && {(_preferredTargetType == 0) && {(vehicle _objType)!= _objType}}) exitWith {}; //(_targetList deleteAt _forEachIndex);
-				_newList pushBack _x;
-			};
-			
-		} foreach _targetList;
-	} foreach _targetPriorityIndex;
-		
-//Find highest preferred targets if they exist and sort by distance (2nd half); else return to player. ... WORKING
-	{	
-		private _xForeach = _x;
-		_targetCount = ({(_x select 4) isKindOf (_targetClass select _xForeach)} count _newList);
-		if (_targetCount >= 1) exitWith {_targetCountIndex = _forEachIndex;};	//set which unit type was found first based on priority ordering [man, car, tank, apc...]
-	} foreach _targetPriorityIndex;
-	
-	if (_targetCount >= 1) then 
-	{
-		_minDistance = ((getPosATL _droneObject) distance2D (getPosATL ((_newList select 0) select 4))); 
-
-		for "_i" from 1 to (_targetCount - 1) step 1 do 
-		{
-			if (_minDistance > ((getPosATL _droneObject) distance2D (getPosATL ((_newList select _i) select 4)))) then 
-			{
-				_minDistance = ((getPosATL _droneObject) distance2D (getPosATL ((_newList select _i) select 4)));
-				_minDistanceIndex = _i;		
-			};	
-		};
-		//hint str [_droneObject, typeOf ((_newList select _minDistanceIndex) select 4)];
-		
-		
-		//Adjust flight height and return the found target...WORKING
-		(_droneObject) flyInHeight [1, true];
-		_foundTarget = ((_newList select _minDistanceIndex) select 4);
-		_foundTarget; //RETURN VARIABLE 
-	} 
-	else //no found target
-	{
-		_foundTarget = 0;
-		_foundTarget;
-	};
-		
-*/
