@@ -293,12 +293,20 @@ class target_Override
 
 
 //custom hud Here, no different than GUI^^ but with updating elements.
-class RscTitles
+/* class RscTitles
 {
 	class RscFpv_HUD
 	{
 		movingEnabled = false;
-		idd = 1116;
+		idd = 1117;
 		duration = 1801;
 	};
-};
+	
+	class RscModuleDroneDefence 
+	{
+		movingEnabled = false;
+		idd = 1118;
+		duration = 1801;
+	};
+	
+}; */

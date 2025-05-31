@@ -71,10 +71,10 @@ Exp_fnc_targetSearch =
 {
 //INPUTS [_droneObject, _marker]
 // _droneObject = player controlled drone to be automated.
-//_marker = location drone was sent to search for targets
+// _marker = location drone was sent to search for targets
 params
 [
-	["_droneObject", nil, [objnull]],
+	["_droneObject", objNull, [objnull]],
 	["_markerPOS", 0, []] //unused for now, might change the _droneobject reveal distance to markerpos to accurately reflect the map marker 
 ];
 	
@@ -92,10 +92,7 @@ params
 
 ////NEW! Nearby Enemy list code (3 - 4.5x faster)
 	_enemyList = [];
-	_enemyList append (_markerPOS nearEntities ["Man", _radius]);
-	_enemyList append (_markerPOS nearEntities ["CAR", _radius]);
-	_enemyList append (_markerPOS nearEntities ["Wheeled_APC_F", _radius]);
-	_enemyList append (_markerPOS nearEntities ["Tank", _radius]);
+	_enemyList append (_markerPOS nearEntities [["Man", "CAR", "Wheeled_APC_F", "Tank"], _radius]);
 	_removeIndexes = [];
 	{
 		if ((side _x isEqualTo side _droneObject) || ((side _droneObject getFriend side _x) > 0.6) || ((typename _x) isNotEqualTo (typename objNull))) then {_removeIndexes append [_foreachindex];};
@@ -162,12 +159,17 @@ Exp_fnc_targetSeek =
 	//INPUTS [_droneObject, _enemyTarget]
 	//_droneObject = player controlled friendly drone
 	//_enemyTarget = highest value target that is the closest
-	_droneObject = _this select 0;
-	_enemyTarget = _this select 1;
+	
+	params 
+	[
+		["_droneObject", objNull, [objNull]],
+		["_enemyTarget", objNull, [objNull]]
+	];
+	
 	_interceptDistance = 0.2; //Distance before intercept is considered complete (default value)
 	_interceptVelocity = [50, 50, 33]; //Top speed to accelerate to (m/s)
-	_targetCOM = getCenterOfMass _enemyTarget; //center of mass of target (only applicable to modelspace, needs to be translated using cos(dir) + sin(dir) for world space)
-	_startFrame = diag_frameNo;	//start of eachframeEH to compare against for furture time
+	_targetCOM = getCenterOfMass _enemyTarget; //center of mass of target (only applicable to modelspace (modeltoworld))
+	_RndMemoryPOS = selectRandom ["usti hlavne2", "driverview", "commanderview", "commander_turret", "gunnerview2", "osa_poklop_gunner", "engine_smoke1", "engine_smoke2"]; //memory positions typically of armored vehicles
 	_accelerationRateTime = 3.5; //time to accelerate (non-linear, follows a curve)
 	
 	if ((_enemyTarget isKindOf "Man") && ((vehicle _enemyTarget) == _enemyTarget)) then 
@@ -199,7 +201,7 @@ Exp_fnc_targetSeek =
 		//_interceptDistance = (_thisArgs select 2);
 		//_interceptVelocity = (_thisArgs select 3);
 		//_targetCOM = (_thisArgs select 4);
-		//_startFrame = (_thisArgs select 5);
+		//_RndMemoryPOS  = (_thisArgs select 5);
 		//_accelerationRateTime = (_thisArgs select 6);
 		
 		If (!alive (_thisArgs select 1)) exitWith
@@ -219,15 +221,36 @@ Exp_fnc_targetSeek =
 		};
 			
 		////////////// HIGHER FREQUENCY TARGET POS CHECKS HERE ////////////////
-		
-		//_dTime = (diag_deltaTime);
-		_dronePos = (getPosATL (_thisArgs select 0));
+	/* //OLD CODE
 		_targetPos = 
 		[
-			(((getPosATL (_thisArgs select 1))select 0) + (-(cos (((getDir (_thisArgs select 1)) +90))) * ((_thisArgs select 4) select 1))),  //getPosATLVisual looks visually more correct but getPosAtl is more accurate to simulation position actual
+			(((getPosATL (_thisArgs select 1))select 0) + (-(cos (((getDir (_thisArgs select 1)) +90))) * ((_thisArgs select 4) select 1))), 
 			(((getPosATL (_thisArgs select 1))select 1) + ((sin (((getDir (_thisArgs select 1)) +90))) * ((_thisArgs select 4) select 1))), 
 			(((getPosATL (_thisArgs select 1))select 2) + (-((_thisArgs select 4) select 2)))
-		];		
+		];	 
+	*/	
+		//_dTime = (diag_deltaTime);
+		_dronePos = (getPosATL (_thisArgs select 0));
+		_targetPos = unitAimPosition (_thisArgs select 1);
+		switch ((objectParent (_thisArgs select 1)) isKindOf "Man") do
+		{
+			case True: 
+			{
+					_targetPos =  (unitAimPosition (_thisArgs select 1));
+		
+			};
+			case False: 
+			{
+				if (((_thisArgs select 1) selectionPosition (_thisArgs select 5)) isNotEqualTo [0,0,0]) then 	
+				{			
+					_targetPos = ((_thisArgs select 1) modelToWorld ((_thisArgs select 1) selectionPosition (_thisArgs select 5)));				
+				}
+				else 
+				{
+					_targetPos = unitAimPosition (_thisArgs select 1);
+				};
+			};
+		};
 		_vectorTargetVelocity = velocity (_thisArgs select 1);
 		_futureTargetPos = _targetPos; //vectorAdd (_vectorTargetVelocity vectorMultiply _dTime);
 		_distanceToTarget = _dronePos distance _futureTargetPos; //distance between drone and expected future pos of target
@@ -297,7 +320,7 @@ Exp_fnc_targetSeek =
 			
 				////////////// LOWER FREQUENCY DRONE VELOCITY AND ANGLE UPDATES HERE ////////////////
 				_velocityVectorDirNorm = [];
- 				if (isNil {((_thisArgs select 0) getVariable "EXP_accelTime")}) then  ////////namespace isNil variableName (faster)
+ 				if ((_thisArgs select 0) isNil "EXP_accelTime") then 
 				{
 					(_thisArgs select 0) setvariable ["EXP_accelTime", ((_thisArgs select 6) - ((diag_deltaTime) * 4))];
 				}
@@ -351,7 +374,7 @@ Exp_fnc_targetSeek =
 					}; 
 								
 				} forEach attachedObjects (_thisArgs select 0);
-				[] spawn Exp_fnc_removeHud;
+				//[] spawn Exp_fnc_removeHud;
 				(_thisArgs select 0) removeAllEventHandlers "Fired";
 				(_thisArgs select 0) removeAllEventHandlers "Hit";
 				(_thisArgs select 0) removeAllEventHandlers "Killed";
@@ -360,9 +383,10 @@ Exp_fnc_targetSeek =
 				removeMissionEventHandler ["EachFrame", _thisEventHandler];				
 		};
 		
-	},[_droneObject, _enemyTarget, _interceptDistance, _interceptVelocity, _targetCOM, _startFrame, _accelerationRateTime] ];
-	waitUntil {sleep 3; (!alive _droneObject)};
-	removeMissionEventHandler ["EachFrame", _targetingUpdate]; //failsafe
+	},[_droneObject, _enemyTarget, _interceptDistance, _interceptVelocity, _targetCOM, _RndMemoryPOS, _accelerationRateTime] ];
+	waitUntil {sleep 6; (!alive _droneObject)};
+	deleteVehicle _droneObject;
+	removeMissionEventHandler ["EachFrame", _targetingUpdate];
 };
 
 

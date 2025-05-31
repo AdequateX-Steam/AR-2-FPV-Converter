@@ -34,7 +34,8 @@ _dropModeDislayList =
 	["rhssaf_tm100_mag", configFile >> "CfgMagazines"]
 ]; //explosives to choose from for dropped mode
 
-_CfgList = [
+_CfgList = 
+[
 	["HandGrenade", configFile >> "CfgMagazines"],
 	["1Rnd_HE_Grenade_shell", configFile >> "CfgMagazines"],    
 	["CA_LauncherMagazine", configFile >> "CfgMagazines"],  

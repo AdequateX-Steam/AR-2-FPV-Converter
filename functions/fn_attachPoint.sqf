@@ -9,11 +9,11 @@ Exp_fnc_modAttach =
 	[
 		["_Ammo","",[""]]
 	];
-	_returnPOS = [0,0.17,-0.185];
- 	if (_Ammo isKindOf "MineBase") then {_returnPOS = [0,.25,.135]};
+	_returnPOS = [0, 0.17, -0.185];
+ 	if (_Ammo isKindOf "MineBase") then {_returnPOS = [0,0.25,.135]};
 	if (_Ammo isKindOf "PipeBombBase") then {_returnPOS = [0.0175,0.025,0.13]};
-	if (_Ammo isKindOf "APERSMine_Range_Ammo") then {_returnPOS = [0,.3,.06]};
-	if (_Ammo isKindOf "APERSBoundingMine_Range_Ammo") then {_returnPOS = [0,.3,.1]};
+	if (_Ammo isKindOf "APERSMine_Range_Ammo") then {_returnPOS = [0,0.3,0.06]};
+	if (_Ammo isKindOf "APERSBoundingMine_Range_Ammo") then {_returnPOS = [0,0.3,0.1]};
 	if (_Ammo isKindOf "DirectionalBombBase") then {_returnPOS = [0.0,0.375,0.0]};
 	_returnPOS;
 };
@@ -35,7 +35,7 @@ switch (_warheadType) do
 	case "ClaymoreDirectionalMine_Remote_Ammo":{_posArray = [0.0,0.375,0.0]};
 	case "SLAMDirectionalMine_Wire_Ammo":{_posArray = [0.0,0.36,0.05]};
 	case "DemoCharge_Remote_Ammo":{_posArray = [0.0175,0.025,0.13]};
-	case "APERSMineDispenser_Ammo":{_posArray = [0,0.3,0]};
+	case "APERSMineDispenser_Ammo":{_posArray = [-0.6,-0.6,0]};
 	case "APERSMine_Range_Ammo":{_posArray = [0,0.3,.06]};
 	case "APERSBoundingMine_Range_Ammo":{_posArray = [0,0.3,.1]};
 	case "IEDUrbanBig_Remote_Ammo": {_posArray = [0,0,-0.1175]};
@@ -49,7 +49,8 @@ switch (_warheadType) do
 	case "M_Titan_AT":{_posArray = [0,-0.35,-0.17]};
 };
 if (_posArray isEqualto [0,0,0]) then {_posArray = [_warheadType] call Exp_fnc_modAttach;};
- _posArray;
+if ((count _posArray) == 0) then {_posArray = [0, 0.17, -0.185];};
+_posArray;
  
  
 // debug console for test ammo positions

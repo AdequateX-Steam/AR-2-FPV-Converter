@@ -21,5 +21,6 @@ class Exp {
 			class Warlords_CFG {
 				postInit = 1;
 			};
+			class moduleDefence{};
 	};
 };
