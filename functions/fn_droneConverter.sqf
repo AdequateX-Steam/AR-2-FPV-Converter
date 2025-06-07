@@ -1,5 +1,7 @@
-_droneObject = _this select 0;
-
+params
+[
+	["_droneObject", objNull, [objnull]]
+];
 
 [
 	_droneObject, 

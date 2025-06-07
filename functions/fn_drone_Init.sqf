@@ -1,6 +1,7 @@
-params [["_droneObject", nil, [objNull]]];
+params [["_droneObject", objNull, [objNull]]];
 
-_droneObject setMass 275.000;
+if (!(_droneObject isNil "ExpMagazine")) exitWith {};
+if (_droneObject iskindof "fpv_Base_F") then { _droneObject setMass 275.000; };
 _droneObject setVariable ["ExpMagazine", ""];
 createVehicleCrew _droneObject;
 _initAction = _droneObject addAction ["<t color='#1c3f45'>Arm Drone</t>",

@@ -75,7 +75,7 @@ Exp_fnc_targetSearch =
 params
 [
 	["_droneObject", objNull, [objnull]],
-	["_markerPOS", 0, []] //unused for now, might change the _droneobject reveal distance to markerpos to accurately reflect the map marker 
+	["_markerPOS", 0, []]
 ];
 	
 	_enemyList =[];

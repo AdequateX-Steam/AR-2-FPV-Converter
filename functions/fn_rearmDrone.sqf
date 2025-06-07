@@ -1,5 +1,8 @@
-//_droneObject = (_this select 0);
-(_this select 0) addAction ["<t color='#1c3f45'>Arm Drone</t>",  
+params
+[
+	["_droneObject", objNull, [objnull]]
+];
+_droneObject addAction ["<t color='#1c3f45'>Arm Drone</t>",  
     { 
 		params ["_target", "_caller", "_actionId"]; 
 		_target removeAction _actionId;   

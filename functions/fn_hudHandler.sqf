@@ -14,10 +14,10 @@ if ((missionNamespace isnil "EXP_Hud")) then {
 	{
 		player setVariable ["UiEnabled", true];	
 		//_layer1 = ["RscInterlacing"] call BIS_fnc_rscLayer; //0.13ms 	//|
-		_layer2 = ["RscFpv_HUD"] call BIS_fnc_rscLayer;					//|
+		//_layer2 = ["RscFpv_HUD"] call BIS_fnc_rscLayer;					//|
 		//_layer3 = ["RscCBRN_APR"] call BIS_fnc_rscLayer; // 0.13 ms     //| 0.32Ms total		
 		//_layer1 cutRsc ["RscInterlacing", "plain", 0, false, true];		//|
-		_layer2 cutRsc ["RscFpv_HUD", "plain", 0, false, true];			//|
+		//_layer2 cutRsc ["RscFpv_HUD", "plain", 0, false, true];			//|
 		//_layer3 cutRsc ["RscCBRN_APR", "plain", 0, false, true];		//|
 		_grainEffect = ppEffectCreate ["FilmGrain", 2000]; 
 		_grainEffect ppEffectAdjust[ 
@@ -41,12 +41,12 @@ if ((missionNamespace isnil "EXP_Hud")) then {
 		_dynEffect ppEffectAdjust [0.15]; 
 		_dynEffect ppEffectCommit 1; */
 		player setVariable ["effectsArray",[_grainEffect, _resEffect]]; //_dynEffect
-		player setVariable ["RscLayerArray", [ _layer2]]; //_layer1, _layer3
+		//player setVariable ["RscLayerArray", [ _layer2]]; //_layer1, _layer3
 	}
 	else
 	{
 		{ppEffectDestroy _x} foreach (player getVariable "effectsArray"); //effectsArray ppeffectenable enable (alternative)
-		{_x cutText ["", "PLAIN"]} foreach (player getVariable "RscLayerArray");
+		//{_x cutText ["", "PLAIN"]} foreach (player getVariable "RscLayerArray");
 		player setVariable ["UiEnabled", False];
 	};
 
@@ -57,10 +57,10 @@ else
 	{
 		player setVariable ["UiEnabled", true];	
 		//_layer1 = ["RscInterlacing"] call BIS_fnc_rscLayer; //0.13ms 	//|
-		_layer2 = ["RscFpv_HUD"] call BIS_fnc_rscLayer;					//|
+		//_layer2 = ["RscFpv_HUD"] call BIS_fnc_rscLayer;					//|
 		//_layer3 = ["RscCBRN_APR"] call BIS_fnc_rscLayer; // 0.13 ms     //| 0.32Ms total		
 		//_layer1 cutRsc ["RscInterlacing", "plain", 0, false, true];		//|
-		_layer2 cutRsc ["RscFpv_HUD", "plain", 0, false, true];			//|
+		//_layer2 cutRsc ["RscFpv_HUD", "plain", 0, false, true];			//|
 		//_layer3 cutRsc ["RscCBRN_APR", "plain", 0, false, true];		//|
 		_grainEffect = ppEffectCreate ["FilmGrain", 2000]; 
 		_grainEffect ppEffectAdjust[ 
@@ -84,12 +84,12 @@ else
 		_dynEffect ppEffectAdjust [0.15]; 
 		_dynEffect ppEffectCommit 1; */
 		player setVariable ["effectsArray",[_grainEffect, _resEffect]]; //_dynEffect
-		player setVariable ["RscLayerArray", [ _layer2]]; //_layer1, _layer3
+		//player setVariable ["RscLayerArray", [ _layer2]]; //_layer1, _layer3
 	}
 	else 
 	{
 		{ppEffectDestroy _x} foreach (player getVariable "effectsArray"); //effectsArray ppeffectenable enable (alternative)
-		{_x cutText ["", "PLAIN"]} foreach (player getVariable "RscLayerArray");
+		//{_x cutText ["", "PLAIN"]} foreach (player getVariable "RscLayerArray");
 		player setVariable ["UiEnabled", False];
 	};
 

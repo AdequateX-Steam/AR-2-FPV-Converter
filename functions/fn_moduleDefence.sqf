@@ -41,7 +41,7 @@ EXP_fnc_defenceModDistanceSort =
 	];
 	_aliveDrones = [];
 	{
-		if ((alive _x) && (_x isNil "Seeking") && (_x isKindOf "fpv_Base_F")) then {_aliveDrones pushback _x;};	
+		if ((alive _x) && (_x isNil "Seeking") && ((_x isKindOf "fpv_Base_F") || (_x isKindOf "UAV_01_base_F"))) then {_aliveDrones pushback _x;};	//maybe change this to ar-2 generic
 	}foreach _droneList;
 	
 	if ((count _aliveDrones) == 0) exitWith 
@@ -176,7 +176,7 @@ EXP_fnc_defenceModWaypoints =
 	private _logicPosASL = getPosASL _logic;
 	private _defenceZoneArea = _logic getVariable ["SearchRadius", 150];
 	
-	if (!(_drone isKindOf "fpv_Base_F")) exitWith {};
+	if (!(_drone isKindOf "fpv_Base_F") && !(_drone isKindOf "UAV_01_base_F")) exitWith {}; //maybe change this to ar-2 generic
 	
 	//detect if uav is too close to _logic pos (125m) and set initial Waypoint to fly away
 	if (((getPosASL _drone) distance2d _logicPosASL ) < 125) then 
@@ -351,7 +351,7 @@ Exp_fnc_defenceModtargetSeek =
 			
 				////////////// LOWER FREQUENCY DRONE VELOCITY AND ANGLE UPDATES HERE ////////////////
 				_velocityVectorDirNorm = [];
- 				if ((_thisArgs select 0) isNil "EXP_accelTime") then  ////////namespace isNil variableName (faster) ////// isNil {((_thisArgs select 0) getVariable "EXP_accelTime")}
+ 				if ((_thisArgs select 0) isNil "EXP_accelTime") then
 				{
 					(_thisArgs select 0) setvariable ["EXP_accelTime", ((_thisArgs select 6) - ((diag_deltaTime) * 4))];
 				}
@@ -493,9 +493,8 @@ if (_activated) then
 	_defenceMarker2 setMarkerText ("Drone search area: "  + (str _defenceZoneArea) + " meters");
 	_defenceMarker2 setMarkerColor "ColorRed";
 	_defenceMarker2 setMarkerSize [1.5, 1.5];
-	
 	{
-		if (_x isKindOf "fpv_Base_F") then 
+		if ((_x isKindOf "fpv_Base_F") || (_x isKindOf "UAV_01_base_F")) then  //maybe change this to ar-2 generic
 		{
 			
 			switch (_warheadClass) do
@@ -639,7 +638,6 @@ if (_activated) then
 					_chance = ((round (random 100.00)) / (_DetectionPercent * _unitCountDetectionBoost));
 				};
 				
-				//prevent Drone from changing targets using setvariable
 				if (_chance <= 1) then 
 				{
 					 _selectedDrone = [_units, _xTargetFar] call EXP_fnc_defenceModDistanceSort;

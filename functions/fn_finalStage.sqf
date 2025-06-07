@@ -2,9 +2,11 @@
 //_drone -> _droneObject
 params[
 	["_Warhead", "", [""]],
-	["_droneObject", nil, [objnull]],
+	["_droneObject", objnull, [objnull]],
 	["_dropped", false, [False]]
 	];
+	
+if ((_droneObject isKindOf "ITC_Land_UAV_AR2i_base") || (_droneObject isKindOf "ITC_Land_UAV_AR2e_base")) then {_droneObject addWeaponTurret ["fpvRocket",[-1]];};
 _originalWarhead = _Warhead; //prepares a copy for replacement timetoLive bypass hack.
 _droneObject addMagazineTurret ["FakeMagazine", [-1], 1];
 

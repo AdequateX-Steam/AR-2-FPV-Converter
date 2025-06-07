@@ -1,6 +1,6 @@
 #include "\a3\ui_f\hpp\definedikcodes.inc"
 disableSerialization;
-params [["_droneObject", nil, [objNull]]];
+params [["_droneObject", objNull, [objNull]]];
 
 																//XXXXXXXXX Initialize the screen + get player inventory XXXXXXXXXXX		
 // performance new code:0.63-0.64ms, old code:0.8051-0.81
