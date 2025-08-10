@@ -191,7 +191,7 @@ Exp_fnc_targetSeek =
 			};
 		};
 	};
-	
+
 	////////////////// SEEKER SCRIPT ///////////////////////
 	_targetingUpdate = addMissionEventHandler ["EachFrame", 
 	{
@@ -351,6 +351,8 @@ Exp_fnc_targetSeek =
 					(1 - _attackAngle)
 				]; 
 				(_thisArgs select 0) setvelocity _incVelocity;
+				//(_thisArgs select 0) addForce [_incVelocity, [0,0,0]];
+				//(_thisArgs select 0) addTorque  ((_thisArgs select 0) vectorModelToWorld [1000,0,0])
 				
 			};		
 		

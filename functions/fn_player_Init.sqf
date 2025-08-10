@@ -26,13 +26,13 @@ if (hasInterface) then  //Run on all players + SP host
 				];
 				if ((_newCameraOn isKindOf "fpv_Base_F") || (_newCameraOn isKindOf "ITC_Land_UAV_AR2i_base") || (_newCameraOn isKindOf "ITC_Land_UAV_AR2e_base")) then  //add handler function for other "drones" to be used as FPVs?
 				{
-					player setVariable ["UiEnabled", false];
+					if ((player getVariable "UiEnabled") == true) exitWith {}; //prevents subsequent reactivations, without previous deactivations
 					[] spawn Exp_fnc_hudHandler;
 				};
 							
-				if ((!(_newCameraOn isKindOf "fpv_Base_F") && !(_newCameraOn isKindOf "ITC_Land_UAV_AR2i_base") && !(_newCameraOn isKindOf "ITC_Land_UAV_AR2e_base"))) then //add handler function for other "drones" to be used as FPVs?
+				if ((_newCameraOn == (vehicle player))) then
 				{
-					player setVariable ["UiEnabled", true];
+					player setVariable ["UiEnabled", true];   //registers hud as being enabled, so that it can be disabled properly.
 					[] spawn Exp_fnc_hudHandler;
 				};
 			}];  
@@ -46,17 +46,18 @@ if (hasInterface) then  //Run on all players + SP host
 					"_oldUnit", "_newUnit", "_vehicleIn",
 					"_oldCameraOn", "_newCameraOn", "_uav"
 				];
-				if ((_newCameraOn isKindOf "fpv_Base_F")) then  //add handler function for other "drones" to be used as FPVs
+				if ((_newCameraOn isKindOf "fpv_Base_F")) then  
 				{
-					player setVariable ["UiEnabled", false];
+					if ((player getVariable "UiEnabled") == true) exitWith {}; //prevents subsequent reactivations, without previous deactivations
 					[] spawn Exp_fnc_hudHandler;
 				};
 							
-				if (!(_newCameraOn isKindOf "fpv_Base_F")) then //add handler function for other "drones" to be used as FPVs
+				if ((_newCameraOn == (vehicle player))) then
 				{
-					player setVariable ["UiEnabled", true];
+					player setVariable ["UiEnabled", true];   //registers hud as being enabled, so that it can be disabled properly.
 					[] spawn Exp_fnc_hudHandler;
 				};
-			}];  
-		};		
+			}];
+		};
+	player setVariable ["UiEnabled", false]; //initializes this variable to be used
 };

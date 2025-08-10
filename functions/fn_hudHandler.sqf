@@ -1,10 +1,10 @@
 //player setVariable ["UiEnabled", False]; //needs to be set in player init
 
 
-if (cameraon == player) exitWith  //exception handler for CBA setting change
+if (cameraon == (vehicle player)) exitWith  //exception handler for CBA setting change
 {
 	{ppEffectDestroy _x} foreach (player getVariable "effectsArray"); //effectsArray ppeffectenable enable (alternative)
-	{_x cutText ["", "PLAIN"]} foreach (player getVariable "RscLayerArray");
+	//{_x cutText ["", "PLAIN"]} foreach (player getVariable "RscLayerArray");
 	player setVariable ["UiEnabled", False];
 };
 

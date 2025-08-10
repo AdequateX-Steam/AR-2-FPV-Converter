@@ -4,10 +4,6 @@ class munition_Selector
 	movingEnabled = false;
 	class controls
 	{
-		////////////////////////////////////////////////////////
-		// GUI EDITOR OUTPUT START (by AdequateX, v1.063, #Nyzycy)
-		////////////////////////////////////////////////////////
-
 		class munitions_pictureBackground: RscPicture
 		{
 			idc = 1200;
@@ -139,9 +135,6 @@ class munition_Selector
 			h = 0.2 * safezoneH;
 			text = "";		
 		};
-		////////////////////////////////////////////////////////
-		// GUI EDITOR OUTPUT END
-		////////////////////////////////////////////////////////
 
 	};
 };
@@ -293,20 +286,356 @@ class target_Override
 
 
 //custom hud Here, no different than GUI^^ but with updating elements.
-/* class RscTitles
-{
-	class RscFpv_HUD
+// class RscTitles {};
+/* 	class RscFpv_HUD
 	{
 		movingEnabled = false;
 		idd = 1117;
 		duration = 1801;
-	};
+	}; */
 	
-	class RscModuleDroneDefence 
+class RscDisplayWarheadConfigurator
+{
+	idd = 1117;
+	movingEnable = false;
+	
+	class ControlsBackground
 	{
-		movingEnabled = false;
-		idd = 1118;
-		duration = 1801;
+		class Background_texture : RscPicture
+		{
+			type = 0;
+			idc = 2000;
+			x = safeZoneX + safeZoneW * 0.25;
+			y = safeZoneY + safeZoneH * 0.25;
+			w = safeZoneW * 0.5;
+			h = safeZoneH * 0.5;
+			style = 80;
+			text = "";
+			colorBackground[] = {0.1477,0.1832,0.2295,1};
+			colorText[] = {0.4,0.4,0.4,0};
+			font = "PuristaMedium";
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1);
+			blinkingPeriod = 0;
+			shadow = 0;
+			
+		};
+		class Background : RscPicture
+		{
+			type = 0;
+			idc = 2001;
+			x = -0.07808079;
+			y = 0.06228957;
+			w = 1.15151516;
+			h = 0.86363637;
+			style = 64; //+192+2
+			text = "Drone Configurator";
+			colorBackground[] = {0,0,0,0};
+			colorText[] = {0.702,0.702,0.702,1};
+			font = "TahomaB";
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1.25);
+			moving = false;
+			shadow = 1;
+			
+		};
+		
 	};
+	class Controls
+	{
+
+		class DroneCount : RscXSliderH
+		{
+			type = 43;
+			idc = 1502;
+			x = safeZoneX + safeZoneW * 0.45;
+			y = safeZoneY + safeZoneH * 0.35;
+			w = safeZoneW * 0.125;
+			h = safeZoneH * 0.025;
+			style = 1024;
+			arrowEmpty = "\A3\ui_f\data\GUI\Cfg\Slider\arrowEmpty_ca.paa";
+			arrowFull = "\A3\ui_f\data\GUI\Cfg\Slider\arrowFull_ca.paa";
+			border = "\A3\ui_f\data\GUI\Cfg\Slider\border_ca.paa";
+			color[] = {0.502,0.702,0.502,1};
+			colorActive[] = {0.502,0.702,0.502,1};
+			thumb = "\A3\ui_f\data\GUI\Cfg\Slider\thumb_ca.paa";
+			sliderRange[] = {1, 5};
+			sliderStep = 1.0;
+			sliderPosition = 1;
+			
+		};
+		class SideSelector : RscCombo
+		{
+			type = 4;
+			idc = 1501;
+			x = safeZoneX + safeZoneW * 0.45;
+			y = safeZoneY + safeZoneH * 0.285;
+			w = safeZoneW * 0.125;
+			h = safeZoneH * 0.03;
+			style = 16+192;
+			arrowEmpty = "\A3\ui_f\data\GUI\RscCommon\RscCombo\arrow_combo_ca.paa";
+			arrowFull = "\A3\ui_f\data\GUI\RscCommon\RscCombo\arrow_combo_active_ca.paa";
+			colorBackground[] = {0.302,0.302,0.302,1};
+			colorDisabled[] = {0,0,0,0};
+			colorSelect[] = {0.702,0.902,0.902,1};
+			colorSelectBackground[] = {0.302,0.302,0.302,1};
+			colorText[] = {0.702,0.902,0.902,1};
+			font = "TahomaB";
+			maxHistoryDelay = 0;
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1);
+			soundCollapse[] = {"\A3\ui_f\data\sound\RscCombo\soundCollapse",1.0,1.0};
+			soundExpand[] = {"\A3\ui_f\data\sound\RscCombo\soundExpand",1.0,1.0};
+			soundSelect[] = {"\A3\ui_f\data\sound\RscCombo\soundSelect",1.0,1.0};
+			wholeHeight = .2;
+			shadow = 1;
+			class ComboScrollBar
+			{
+				color[] = {1,1,1,1};
+				thumb = "\A3\ui_f\data\gui\cfg\scrollbar\thumb_ca.paa";
+				arrowFull = "\A3\ui_f\data\gui\cfg\scrollbar\arrowFull_ca.paa";
+				arrowEmpty = "\A3\ui_f\data\gui\cfg\scrollbar\arrowEmpty_ca.paa";
+				border = "\A3\ui_f\data\gui\cfg\scrollbar\border_ca.paa";
+				
+			};
+			
+		};
+		class DescriptionText : RscText
+		{
+			type = 0;
+			idc = 1503;
+			x = safeZoneX + safeZoneW * 0.435;
+			y = safeZoneY + safeZoneH * 0.370;
+			w = safeZoneW * 0.15;
+			h = safeZoneH * 0.0275;
+			style = 2;
+			text = "FPV Drones: Count ";
+			colorBackground[] = {0,0,0,0};
+			colorText[] = {1,1,1,1};
+			font = "PuristaSemiBold";
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 0.95);
+			shadow = 1;
+			
+		};
+		class munitions_confirmButton : RscButton 
+		{
+			type = 1;
+			idc = 1600;
+			x = 0.020000;
+			y = 0.13;
+			w = 0.1;
+			h = 0.1;
+			style = 2;
+			text = "Confirm";
+			borderSize = 0;
+			colorBackground[] = {0.1613,0.3484,0.1613,1};
+			colorBackgroundActive[] = {0,1,0,1};
+			colorBackgroundDisabled[] = {0.2,0.2,0.2,1};
+			colorBorder[] = {0,0,0,0};
+			colorDisabled[] = {0.2,0.2,0.2,1};
+			colorFocused[] = {0,1,0,1};
+			colorShadow[] = {0,0,0,1};
+			colorText[] = {0,0,0,1};
+			font = "PuristaMedium";
+			offsetPressedX = 0.01;
+			offsetPressedY = 0.01;
+			offsetX = 0.01;
+			offsetY = 0.01;
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1);
+			soundClick[] = {"\A3\ui_f\data\sound\RscButton\soundClick",1.0,1.0};
+			soundEnter[] = {"\A3\ui_f\data\sound\RscButton\soundEnter",1.0,1.0};
+			soundEscape[] = {"\A3\ui_f\data\sound\RscButton\soundEscape",1.0,1.0};
+			soundPush[] = {"\A3\ui_f\data\sound\RscButton\soundPush",1.0,1.0};
+			tooltip = "Confirm to Place FPV drone with selected warhead";
+			
+		};
+		class munitions_ListBox : RscListBox 
+		{
+			type = 5;
+			idc = 1500;
+			x = safeZoneX + safeZoneW * 0.6;
+			y = safeZoneY + safeZoneH * 0.285;
+			w = safeZoneW * 0.125;
+			h = safeZoneH * 0.425;
+			style = 16;
+			colorBackground[] = {1,1,1,0.75};
+			colorDisabled[] = {0.2,0.2,0.2,1};
+			colorSelect[] = {0,0,0,1};
+			colorText[] = {0,0,0,1};
+			font = "PuristaMedium";
+			maxHistoryDelay = 0;
+			rowHeight = 0;
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1);
+			soundSelect[] = {"\A3\ui_f\data\sound\RscListbox\soundSelect",0.09,1.0};
+			colorSelectBackground[] = {0.3121,0.4405,0.4672,1};
+			colorSelectBackground2[] = {0.75,0.75,0.75,1};
+			class ListScrollBar
+			{
+				color[] = {0.2, 0.4, 0.4, 1};
+				thumb = "\A3\ui_f\data\gui\cfg\scrollbar\thumb_ca.paa";
+				arrowFull = "\A3\ui_f\data\gui\cfg\scrollbar\arrowFull_ca.paa";
+				arrowEmpty = "\A3\ui_f\data\gui\cfg\scrollbar\arrowEmpty_ca.paa";
+				border = "\A3\ui_f\data\gui\cfg\scrollbar\border_ca.paa";
+				
+			};
+			
+		};
+		class munitions_cancelButton : RscButton 
+		{
+			type = 1;
+			idc = 1601;
+			x = 0.190;
+			y = 0.13;
+			w = 0.1;
+			h = 0.1;
+			style = 2;
+			text = "Cancel";
+			borderSize = 0;
+			colorBackground[] = {0.3484,0.1599,0.1599,1};
+			colorBackgroundActive[] = {1,0,0,1};
+			colorBackgroundDisabled[] = {0.2,0.2,0.2,1};
+			colorBorder[] = {0,0,0,0};
+			colorDisabled[] = {0.2,0.2,0.2,1};
+			colorFocused[] = {0.9,0,0,1};
+			colorShadow[] = {0,0,0,1};
+			colorText[] = {0,0,0,1};
+			font = "PuristaMedium";
+			offsetPressedX = 0.01;
+			offsetPressedY = 0.01;
+			offsetX = 0.01;
+			offsetY = 0.01;
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1);
+			soundClick[] = {"\A3\ui_f\data\sound\RscButton\soundClick",1.0,1.0};
+			soundEnter[] = {"\A3\ui_f\data\sound\RscButton\soundEnter",1.0,1.0};
+			soundEscape[] = {"\A3\ui_f\data\sound\RscButton\soundEscape",1.0,1.0};
+			soundPush[] = {"\A3\ui_f\data\sound\RscButton\soundPush",1.0,1.0};
+			tooltip = "";		
+		};	
+		class munitions_warheadPicture : RscPicture
+		{
+			idc = 1201;
+			x = 0.07000043;
+			y = 0.33500033;
+			w = 0.55500006;
+			h = 0.51500006;
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1);
+			
+		};
+	};	
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* class RscDisplayWarheadConfigurator
+{
 	
+	idd = 1117;
+	movingEnable = false;
+	class controls
+	{
+		class munitions_pictureBackground: RscPicture
+		{
+			idc = 1200;
+			text = "#(argb,8,8,3)color(1,1,1,0.65)";
+			x = 0.324687 * safezoneW + safezoneX;
+			y = 0.291 * safezoneH + safezoneY;
+			w = 0.340312 * safezoneW;
+			h = 0.418 * safezoneH;
+			colorBackground[] = {0,0,0,0.35};
+		};
+		class munitions_pictureBorder : RscPicture 
+		{
+			type = 0;
+			idc = 1210;
+			x = 0.324687 * safezoneW + safezoneX;//
+			y = 0.2805 * safezoneH + safezoneY;//
+			w = 0.34125 * safezoneW; //
+			h = 0.4305 * safezoneH;  //
+			style = 64;
+			colorBackground[] = {0,0,0,1};
+			colorText[] = {0.10, 0.85, 0.10, 1};
+			text = "Explosives";
+			font = "PuristaBold";
+			sizeEx = (((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1);
+			shadow = 2;		
+		};
+		class munitions_confirmButton: RscButton
+		{
+			idc = 1600;
+			text = "Confirm"; 
+			x = 0.335 * safezoneW + safezoneX;
+			y = 0.313 * safezoneH + safezoneY;
+			w = 0.04125 * safezoneW;
+			h = 0.055 * safezoneH;
+			style = 2; /////
+			font = "PuristaLight";
+			tooltip = "Confirm to Place FPV drone with selected warhead";
+			colorBackground[] = {0.41,0.89,0.41,1}; //{0,0.7,0,0.6}
+			colorBackgroundActive[] = {0,1,0,1};
+			colorText[] = {0,0,0,1};
+			colorFocused[] = {0,1,0,1};
+			
+		};
+		class munitions_ListBox: RscListbox
+		{
+			idc = 1500;
+			x = 0.551562 * safezoneW + safezoneX;
+			y = 0.313 * safezoneH + safezoneY;
+			w = 0.103125 * safezoneW;
+			h = 0.374 * safezoneH;
+			colorText[] = {0,0,0,1};
+			colorSelect[] = {0,0,0,1};
+			colorSelectBackground[] = {0.31,0.44,0.46,1}; //{0,0.8,0.8,1}
+			colorSelectBackground2[] = {0.75,0.75,0.75,1};
+			colorBackground[] = {1,1,1,0.85};
+			class ListScrollBar
+				{
+					color[] = {0.2,0.2,0.2,1};
+					thumb = "\A3\ui_f\data\gui\cfg\scrollbar\thumb_ca.paa";
+					arrowFull = "\A3\ui_f\data\gui\cfg\scrollbar\arrowFull_ca.paa";
+					arrowEmpty = "\A3\ui_f\data\gui\cfg\scrollbar\arrowEmpty_ca.paa";
+					border = "\A3\ui_f\data\gui\cfg\scrollbar\border_ca.paa";
+					
+				};
+		};
+		class munitions_CancelButton: RscButton
+		{
+			idc = 1601;
+			text = "Cancel"; 
+			x = 0.335 * safezoneW + safezoneX;
+			y = 0.632 * safezoneH + safezoneY;
+			w = 0.04125 * safezoneW;
+			h = 0.055 * safezoneH;
+			style = 2; ///////
+			font = "PuristaLight";
+			colorBackground[] = {0.89,0.41,0.41,1};
+			colorBackgroundActive[] = {1,0,0,1};
+			colorText[] = {0,0,0,1};
+			colorFocused[] = {1,0,0,1};
+			
+		};
+		
+		class munitions_warheadPicture: RscPicture
+		{
+			idc = 1201;
+			x = 0.3970 * safezoneW + safezoneX;
+			y = 0.40 * safezoneH + safezoneY; //0.375
+			w = 0.134 * safezoneW;
+			h = 0.2 * safezoneH;
+			text = "";		
+		};
+	};	
 }; */

@@ -41,7 +41,7 @@ EXP_fnc_defenceModDistanceSort =
 	];
 	_aliveDrones = [];
 	{
-		if ((alive _x) && (_x isNil "Seeking") && ((_x isKindOf "fpv_Base_F") || (_x isKindOf "UAV_01_base_F"))) then {_aliveDrones pushback _x;};	//maybe change this to ar-2 generic
+		if ((alive _x) && (_x isNil "Seeking") && ((_x isKindOf "fpv_Base_F") || (_x isKindOf "UAV_01_base_F"))) then {_aliveDrones pushback _x;};
 	}foreach _droneList;
 	
 	if ((count _aliveDrones) == 0) exitWith 
@@ -176,7 +176,7 @@ EXP_fnc_defenceModWaypoints =
 	private _logicPosASL = getPosASL _logic;
 	private _defenceZoneArea = _logic getVariable ["SearchRadius", 150];
 	
-	if (!(_drone isKindOf "fpv_Base_F") && !(_drone isKindOf "UAV_01_base_F")) exitWith {}; //maybe change this to ar-2 generic
+	if (!(_drone isKindOf "fpv_Base_F") && !(_drone isKindOf "UAV_01_base_F")) exitWith {};
 	
 	//detect if uav is too close to _logic pos (125m) and set initial Waypoint to fly away
 	if (((getPosASL _drone) distance2d _logicPosASL ) < 125) then 
@@ -494,7 +494,7 @@ if (_activated) then
 	_defenceMarker2 setMarkerColor "ColorRed";
 	_defenceMarker2 setMarkerSize [1.5, 1.5];
 	{
-		if ((_x isKindOf "fpv_Base_F") || (_x isKindOf "UAV_01_base_F")) then  //maybe change this to ar-2 generic
+		if ((_x isKindOf "fpv_Base_F") || (_x isKindOf "UAV_01_base_F")) then 
 		{
 			
 			switch (_warheadClass) do
@@ -583,7 +583,7 @@ if (_activated) then
 		if ((((_logic getVariable "TargetLOS") == 0) && {(_xTargetClose isNotEqualTo objNull)})) then 
 		{
 			_logic setVariable ["TargetLOS", 1];
-			//consider doing "targerLOS" on the target instead and keep selectrandom targets that do not have "targerLOS" so that the logic can spawn multiple attack drones on multiple targets
+			//consider doing "targetLOS" on the target instead and keep selectrandom targets that do not have "targerLOS" so that the logic can spawn multiple attack drones on multiple targets
 			[_xTargetClose, _logic, _units] spawn
 			{
 				params 

@@ -22,5 +22,6 @@ class Exp {
 				postInit = 1;
 			};
 			class moduleDefence{};
+			class zeusArmDrone{};
 	};
 };

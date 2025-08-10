@@ -14,7 +14,7 @@ class CfgPatches
 		author = "AdequateX";
 		requiredVersion= 1.60;
 		requiredAddons[] = {"A3_Ui_F", "A3_Ui_F_Data", "A3_Drones_F", "A3_weapons_f", "A3_weapons_f_beta", "A3_missions_f_warlords", "A3_Modules_F"};
-		units[] = {"B_FPV_AR2", "O_FPV_AR2", "I_FPV_AR2", "B_FPVAR2_backpack_F", "O_FPVAR2_backpack_F", "I_FPVAR2_backpack_F", "EXP_ModuleDefence_F", "EXP_CuratorDefence_F"};
+		units[] = {"B_FPV_AR2", "O_FPV_AR2", "I_FPV_AR2", "B_FPVAR2_backpack_F", "O_FPVAR2_backpack_F", "I_FPVAR2_backpack_F", "EXP_ModuleDefence_F", "EXP_CuratorWarhead_F"};
 		weapons[] = {"fpvRocket","fpvGrenade"};
 	};
 };
@@ -35,6 +35,7 @@ class RscStructuredText;
 class RscEdit;
 class RscButton;
 class RscCheckBox;
+class RscXSliderH;
 #include "dialogs.hpp"
 
 class CfgWeapons 
@@ -553,6 +554,8 @@ class CfgVehicles {
 		editorPreview = "\A3\EditorPreviews_F\Data\CfgVehicles\B_UAV_01_F.jpg";
 		_generalMacro = "B_FPV_AR2";
 		scope = 2;
+		scopeCurator = 2;
+		scopeArsenal = 2;
 		side = 1;
 		faction = "BLU_F";
 		crew = "B_UAV_AI";
@@ -589,6 +592,8 @@ class CfgVehicles {
 		editorPreview = "\A3\EditorPreviews_F\Data\CfgVehicles\O_UAV_01_F.jpg";
 		_generalMacro = "O_FPV_AR2";
 		scope = 2;
+		scopeCurator = 2;
+		scopeArsenal = 2;
 		side = 0;
 		faction = "OPF_F";
 		crew = "O_UAV_AI";
@@ -625,6 +630,8 @@ class CfgVehicles {
 		editorPreview = "\A3\EditorPreviews_F\Data\CfgVehicles\I_UAV_01_F.jpg";
 		_generalMacro = "I_FPV_AR2";
 		scope = 2;
+		scopeCurator = 2;
+		scopeArsenal = 2;
 		side = 2;
 		faction = "IND_F";
 		crew = "I_UAV_AI";
@@ -1065,23 +1072,24 @@ class CfgVehicles {
 		};
 		
 	}; 
-	class EXP_CuratorDefence_F : EXP_ModuleDefence_F
+	class EXP_CuratorWarhead_F : EXP_ModuleTemplate_F
 	{
 		author = "AdequateX";
-		_generalMacro = "EXP_CuratorDefence_F";
-		scope = 0;
+		_generalMacro = "EXP_CuratorWarhead_F";
+		displayName = "FPV Warhead Configurator";				// Name displayed in the menu
+		//icon = "\a3\ui_f\data\IGUI\RscIngameUI\RscUnitInfoAirRTDFullDigital\digital_compass_plane_ca.paa";	// Map icon. Delete this entry to use the default icon.
+		scope = 2;	// Editor visibility; 2 will show it in the menu, 1 will hide it.
 		scopeCurator = 2;
-		curatorCanAttach = 1;
-		curatorInfoType = "RscDisplayAttributesModuleObjectiveAttackDefend";
-		isGlobal = 0;
-		category = "Supports"; //Effects
-		displayName = "FPV Drone Area Defence";
-		portrait = "\a3\ui_f\data\Map\Markers\HandDrawn\flag_CA.paa";
-		function = "EXP_fnc_moduleDefence";
-		delete Attributes;
-		simulation = "house";
-		//model = "\a3\Modules_F_Curator\Ordnance\surfaceMortar.p3d";
-		curatorCost = 1;			
+		curatorCanAttach = 0;	// 1 to allow Zeus to attach the module to an entity
+		curatorInfoType = "RscDisplayWarheadConfigurator";   //rsctitle display to open on place or double click (eg. "RscDisplayAttributesModuleObjectiveAttackDefend")
+		isGlobal = 0;	// 0 for server only execution, 1 for global execution, 2 for persistent global execution
+		//is3DEN = 0;		// 1 to run init function in Eden Editor as well
+		isDisposable = 0;					// 1 if modules is to be disabled once it is activated (i.e. repeated trigger activation will not work)
+		isTriggerActivated = 0;
+		category = "Curator";
+		portrait = "\a3\Ui_F_Curator\Data\CfgMarkers\minefieldAP_ca.paa";
+		function = "EXP_fnc_zeusArmDrone"; // Name of function triggered once conditions are met	
+		curatorCost = 1;
 	};
 
 
