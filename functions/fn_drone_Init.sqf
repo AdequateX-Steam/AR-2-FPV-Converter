@@ -1,6 +1,6 @@
 params [["_droneObject", objNull, [objNull]]];
 
-if (!(_droneObject isNil "ExpMagazine")) exitWith {};
+if (!(_droneObject isNil "ExpMagazine")) exitWith {};  //conflicts with zeusArmDrone (uncessary?)
 if (_droneObject iskindof "fpv_Base_F") then { _droneObject setMass 275.000; };
 _droneObject setVariable ["ExpMagazine", ""];
 createVehicleCrew _droneObject;

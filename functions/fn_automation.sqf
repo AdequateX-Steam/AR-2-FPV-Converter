@@ -1,4 +1,5 @@
 #include "\a3\ui_f\hpp\definedikcodes.inc"
+//disableSerialization
 private _droneObject = _this select 0;
 private _actionId = _this select 1;
 _droneObject setVariable ["EXP_targetType", 3]; //default initialization (3)

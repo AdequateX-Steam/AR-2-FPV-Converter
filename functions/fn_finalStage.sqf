@@ -1,5 +1,6 @@
 //**useful commands** disableCollisionWith
 //_drone -> _droneObject
+// need to _drone disableAI "FIREWEAPON"
 params[
 	["_Warhead", "", [""]],
 	["_droneObject", objnull, [objnull]],
@@ -11,7 +12,7 @@ _originalWarhead = _Warhead; //prepares a copy for replacement timetoLive bypass
 _droneObject addMagazineTurret ["FakeMagazine", [-1], 1];
 
 
-if ((_Warhead isKindOf "MissileBase") || (_Warhead isKindOf "RocketBase")) then
+if ((_Warhead isKindOf "MissileBase") || (_Warhead isKindOf "RocketBase") || (_Warhead isKindOf "BombCore") || (_Warhead isKindOf "SubmunitionBase")) then  //bombCore for experimental zeus weapons
 {
 	_Warhead = "fpvAmmo"; //creates a special CfgAmmo type with a higher 'timetoLive' value to bypass auto detonation limits.
 	_warheadLocation = getPosATL _droneObject;
