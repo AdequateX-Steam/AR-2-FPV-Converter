@@ -4,7 +4,7 @@ _maxMass = 300;//adjust this setting for the maximum allowable Mass desired (NO 
 
 if (!(missionNamespace isNil "EXP_Mass")) then 
 {
-	_maxmass = ((missionNamespace getVariable "EXP_Mass") * 10); //if CBA_A3 is installed
+	_maxMass = ((missionNamespace getVariable "EXP_Mass") * 10); //if CBA_A3 is installed
 };
 
 

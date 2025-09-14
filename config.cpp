@@ -19,6 +19,9 @@ class CfgPatches
 	};
 };
 
+//enableDebugConsole = 2; ///FOR TESTING ONLY DELETE OR COMMENT OUT AFTER!!!!!
+
+
 class CfgFunctions {
 	#include "\fpvConverter\functions\cfgFunctions.hpp"
 }; 
@@ -197,7 +200,7 @@ class CfgVehicles {
 		accuracy = 2.5;
 		camouflage = 0.20;
 		audible = 0.1;
-		armor = 2; //0.5
+		armor = 1.5; //0.5
 		cost = 100; /////200 //20000
 		altFullForce = 1250; 
 		altNoForce = 2000;	
@@ -211,7 +214,7 @@ class CfgVehicles {
 		picture = "\A3\Drones_F\Air_F_Gamma\UAV_01\Data\UI\UAV_01_CA.paa";
 		class Reflectors{};
 		startDuration = 0.5; //1.00
-		maxSpeed = 170;
+		maxSpeed = 190;
 		precision = 10; //waypoint complete radius precision?
 		steerAheadSimul = 0.5;
 		steerAheadPlan = 0.7;
@@ -1125,26 +1128,25 @@ class CfgVehicles {
 			
 			class DroneCount 
 			{
-				displayName = "Drone(s) to create:";			// Argument label
-				tooltip = "";	// Tooltip description
-				property = "EXP_ModuleDefence_DroneCount";				// Unique property (use "<tag>_<moduleClass>_<attributeClass>" format to ensure that the name is unique)
+				displayName = "Drone(s) to create:";			
+				tooltip = "";									
+				property = "EXP_ModuleDefence_DroneCount";				
 				control = "DroneCount";
 				typeName = "NUMBER";
 				expression = "_this setVariable ['%s',_value,true];";
-				// Value type, can be "NUMBER", "STRING" or "BOOL"
+				
 				value = "1.00"; //10
 				defaultValue = "1.00"; //10
 			};
 			
 			class WarheadSelector 
 			{
-				displayName = "Warhead Type:";			// Argument label
-				tooltip = "Choose which warhead to arm the drones with";	// Tooltip description
-				property = "EXP_ModuleDefence_WarheadSelector";				// Unique property (use "<tag>_<moduleClass>_<attributeClass>" format to ensure that the name is unique)
+				displayName = "Warhead Type:";			
+				tooltip = "Choose which warhead to arm the drones with";	
+				property = "EXP_ModuleDefence_WarheadSelector";				
 				control = "WarheadSelector";
 				typeName = "STRING";
 				expression = "_this setVariable ['%s',_value,true];";
-				// Value type, can be "NUMBER", "STRING" or "BOOL"
 				defaultValue = "0"; //10
 		
 			};
@@ -1159,28 +1161,15 @@ class CfgVehicles {
 			directionDisabled = "Has no effect";
 			directionEnabled = "Affects module function";
 			displayName = "";
-			duplicate = 1;
-			duplicateDisabled = "Only one entity of this type can be synced.";
+			duplicate = 0;
+			duplicateDisabled = "No entities can be synced";
 			duplicateEnabled = "Multiple entities of this type can be synced.";
 			icon = "";
 			position = 1;
 			positionDisabled = "Has no effect";
-			positionEnabled = "Affects module function (center point)";
+			positionEnabled = "location of module affects drone spawn position";
 			sync[] = {}; //All
-			vehicle[] = {};
-			
-			class LocationArea_F
-			{
-				description[] = { // Multi-line descriptions are supported
-					"First line",
-					"Second line"
-				};
-				position = 1;	// Position is taken into effect
-				direction = 0;	// Direction is taken into effect
-				optional = 0;	// Synced entity is optional
-				duplicate = 0;	// Multiple entities of this type can be synced
-				synced[] = {"AnyBrain"};	// Pre-defined entities like "AnyBrain" can be used (see the table below)
-			};		
+			vehicle[] = {};		
 		};
 	};
 
@@ -1205,8 +1194,8 @@ class Cfg3DEN
 
  		class Combo: Title 
 		{
-			attributeLoad = "		comment 'DO NOT COPY THIS CODE TO YOUR ATTRIBUTE CONFIG UNLESS YOU ARE CHANGING SOMETHING IN THE CODE!';		_ctrlCombo = _this controlsGroupCtrl 100;		_cfgValues = _config >> 'Values';		if (isclass _cfgValues) then {			{				_lbadd = _ctrlCombo lbadd gettext (_x >> 'name');				if (isnumber (_x >> 'value')) then {					_valueConfig = getnumber (_x >> 'value');					_ctrlCombo lbsetdata [_lbadd,str _valueConfig];					_ctrlCombo lbsetvalue [_lbadd,_valueConfig];				} else {					_ctrlCombo lbsetdata [_lbadd,gettext (_x >> 'value')];				};				_ctrlCombo lbsetpicture [_lbadd,gettext (_x >> 'picture')];				_ctrlCombo lbsetpictureright [_lbadd,gettext (_x >> 'pictureRight')];				_ctrlCombo lbsettooltip [_lbadd,gettext (_x >> 'tooltip')];				if (getnumber (_x >> 'default') > 0) then {_ctrlCombo lbsetcursel _lbadd;};			} foreach configproperties [_cfgValues,'isclass _x'];		};		if (lbsize _ctrlCombo == 0) then {			{				_lbAdd = _ctrlCombo lbadd _x;				_ctrlCombo lbsetvalue [_lbAdd,1 - _foreachindex];				_ctrlCombo lbsetdata [_lbAdd,str (1 - _foreachindex)];			} foreach [localize 'str_enabled',localize 'str_disabled'];		};		if (_value isequaltype true) then {			_value = parseNumber _value;		} else {			if (_value isequaltype '') then {_value = tolower _value;};		};		for '_i' from 0 to (lbsize _ctrlCombo - 1) do {			if (_value in [parsenumber (_ctrlCombo lbdata _i),tolower (_ctrlCombo lbdata _i),_ctrlCombo lbvalue _i]) exitwith {_ctrlCombo lbsetcursel _i;};		};	";
-			attributeSave = "		comment 'DO NOT COPY THIS CODE TO YOUR ATTRIBUTE CONFIG UNLESS YOU ARE CHANGING SOMETHING IN THE CODE!';		_ctrlCombo = _this controlsGroupCtrl 100;		switch toupper gettext (_config >> 'typeName') do {			case 'NUMBER': {				_returnData = parsenumber (_ctrlCombo lbdata lbcursel _ctrlCombo);				_returnValue = _ctrlCombo lbvalue lbcursel _ctrlCombo;				if (round _returnData != _returnValue) then {_returnData = _returnValue;};				_returnData			};			case 'BOOL': {				[false,true] select ((parsenumber (_ctrlCombo lbdata lbcursel _ctrlCombo)) max 0 min 1)			};			default {_ctrlCombo lbdata lbcursel _ctrlCombo};		};	";
+			//attributeLoad = "		comment 'DO NOT COPY THIS CODE TO YOUR ATTRIBUTE CONFIG UNLESS YOU ARE CHANGING SOMETHING IN THE CODE!';		_ctrlCombo = _this controlsGroupCtrl 100;		_cfgValues = _config >> 'Values';		if (isclass _cfgValues) then {			{				_lbadd = _ctrlCombo lbadd gettext (_x >> 'name');				if (isnumber (_x >> 'value')) then {					_valueConfig = getnumber (_x >> 'value');					_ctrlCombo lbsetdata [_lbadd,str _valueConfig];					_ctrlCombo lbsetvalue [_lbadd,_valueConfig];				} else {					_ctrlCombo lbsetdata [_lbadd,gettext (_x >> 'value')];				};				_ctrlCombo lbsetpicture [_lbadd,gettext (_x >> 'picture')];				_ctrlCombo lbsetpictureright [_lbadd,gettext (_x >> 'pictureRight')];				_ctrlCombo lbsettooltip [_lbadd,gettext (_x >> 'tooltip')];				if (getnumber (_x >> 'default') > 0) then {_ctrlCombo lbsetcursel _lbadd;};			} foreach configproperties [_cfgValues,'isclass _x'];		};		if (lbsize _ctrlCombo == 0) then {			{				_lbAdd = _ctrlCombo lbadd _x;				_ctrlCombo lbsetvalue [_lbAdd,1 - _foreachindex];				_ctrlCombo lbsetdata [_lbAdd,str (1 - _foreachindex)];			} foreach [localize 'str_enabled',localize 'str_disabled'];		};		if (_value isequaltype true) then {			_value = parseNumber _value;		} else {			if (_value isequaltype '') then {_value = tolower _value;};		};		for '_i' from 0 to (lbsize _ctrlCombo - 1) do {			if (_value in [parsenumber (_ctrlCombo lbdata _i),tolower (_ctrlCombo lbdata _i),_ctrlCombo lbvalue _i]) exitwith {_ctrlCombo lbsetcursel _i;};		};	";
+			//attributeSave = "		comment 'DO NOT COPY THIS CODE TO YOUR ATTRIBUTE CONFIG UNLESS YOU ARE CHANGING SOMETHING IN THE CODE!';		_ctrlCombo = _this controlsGroupCtrl 100;		switch toupper gettext (_config >> 'typeName') do {			case 'NUMBER': {				_returnData = parsenumber (_ctrlCombo lbdata lbcursel _ctrlCombo);				_returnValue = _ctrlCombo lbvalue lbcursel _ctrlCombo;				if (round _returnData != _returnValue) then {_returnData = _returnValue;};				_returnData			};			case 'BOOL': {				[false,true] select ((parsenumber (_ctrlCombo lbdata lbcursel _ctrlCombo)) max 0 min 1)			};			default {_ctrlCombo lbdata lbcursel _ctrlCombo};		};	";
 			class Controls: Controls
 			{
 				class Title: Title{};
@@ -1235,8 +1224,8 @@ class Cfg3DEN
 		class DroneDetection: Slider
 		{
 			onLoad = "		comment 'DO NOT COPY THIS CODE TO YOUR ATTRIBUTE CONFIG UNLESS YOU ARE CHANGING SOMETHING IN THE CODE!';		_ctrlGroup = _this select 0;		[_ctrlGroup controlsgroupctrl 100,_ctrlGroup controlsgroupctrl 101,''] call bis_fnc_initSliderValue;	";
-			attributeLoad = "		comment 'DO NOT COPY THIS CODE TO YOUR ATTRIBUTE CONFIG UNLESS YOU ARE CHANGING SOMETHING IN THE CODE!';		_ctrlGroup = _this;		[_ctrlGroup controlsgroupctrl 100,_ctrlGroup controlsgroupctrl 101,'',_value] call bis_fnc_initSliderValue;	";
-			expression = "_this setVariable ['%s',_value,true];";
+			//attributeLoad = "		comment 'DO NOT COPY THIS CODE TO YOUR ATTRIBUTE CONFIG UNLESS YOU ARE CHANGING SOMETHING IN THE CODE!';		_ctrlGroup = _this;		[_ctrlGroup controlsgroupctrl 100,_ctrlGroup controlsgroupctrl 101,'',_value] call bis_fnc_initSliderValue;	";
+			//expression = "_this setVariable ['%s',_value,true];";
 			class Controls: Controls
 			{
 				class Title: Title{};
@@ -1254,8 +1243,8 @@ class Cfg3DEN
 		class DroneCount: Slider
 		{
 			onLoad = "		comment 'DO NOT COPY THIS CODE TO YOUR ATTRIBUTE CONFIG UNLESS YOU ARE CHANGING SOMETHING IN THE CODE!';		_ctrlGroup = _this select 0;		[_ctrlGroup controlsgroupctrl 100,_ctrlGroup controlsgroupctrl 101,''] call bis_fnc_initSliderValue;	";
-			attributeLoad = "		comment 'DO NOT COPY THIS CODE TO YOUR ATTRIBUTE CONFIG UNLESS YOU ARE CHANGING SOMETHING IN THE CODE!';		_ctrlGroup = _this;		[_ctrlGroup controlsgroupctrl 100,_ctrlGroup controlsgroupctrl 101,'',_value] call bis_fnc_initSliderValue;	";
-			expression = "_this setVariable ['%s',_value,true];";
+			//attributeLoad = "		comment 'DO NOT COPY THIS CODE TO YOUR ATTRIBUTE CONFIG UNLESS YOU ARE CHANGING SOMETHING IN THE CODE!';		_ctrlGroup = _this;		[_ctrlGroup controlsgroupctrl 100,_ctrlGroup controlsgroupctrl 101,'',_value] call bis_fnc_initSliderValue;	";
+			//expression = "_this setVariable ['%s',_value,true];";
 			class Controls: Controls
 			{
 				class Title: Title{};
@@ -1265,7 +1254,7 @@ class Cfg3DEN
 					sliderStep = 1;
 					sliderRange[] = {1,10};	
 					sliderPosition = 1;
-					lineSize = 2;
+					lineSize = 1;
 				};
 				class Edit: Edit{};
 			};
@@ -1273,7 +1262,6 @@ class Cfg3DEN
 		
  		class WarheadSelector : Combo
 		{
-			//attributeSave = "_ctrlCombo = _this controlsGroupCtrl 100; (_ctrlCombo lbdata lbcursel _ctrlCombo)";
 			class Controls: Controls
 			{
 				class Title: Title{};
@@ -1283,13 +1271,10 @@ class Cfg3DEN
 					x = "48 * (pixelW * pixelGrid * 	0.50)";
 					w = "82 * (pixelW * pixelGrid * 	0.50)";
 					h = "5 * (pixelH * pixelGrid * 	0.50)";
-					//colorTextRight[] = {1,1,1,0.5};
-					//colorSelectRight[] = {0,0,0,0.5};
 					onLoad ="_control = _this select 0; _ClassTypes = ['CA_LauncherMagazine', 'ATMine_Range_Mag','SatchelCharge_Remote_Mag','ClaymoreDirectionalMine_Remote_Mag','rhssaf_tm100_mag','rhs_rpg26_mag','rhs_rpg75_mag'];	_WarheadList = ""901 in (getArray( _x >> 'allowedSlots'))"" configClasses (configFile >> 'CfgMagazines');		_WarheadList = _WarheadList apply {configName _x;}; 	_WarheadList deleteAt (_WarheadList find 'CA_LauncherMagazine');	{	_currentMag = _x;		{				if (_currentMag isKindOf [_x , configFile >> 'CfgMagazines']) then { 		_lbadd = _control lbadd gettext (configFile >> 'CfgMagazines' >> _currentMag >> 'displayname');	_control lbsetdata [_lbadd, _currentMag];	_control lbsetpicture [_lbadd,gettext (configFile >> 'CfgMagazines' >> _currentMag >> 'picture')];		};			} forEach _ClassTypes;		} forEach _WarheadList;"; 	
 				};
 			};		
-		};
-		
+		};	
 	};	
 };
 
@@ -1313,11 +1298,4 @@ class Cfg3DEN
 					} forEach _WarheadList; 
 */														
 
-///onLoad ="_control = _this select 0; _ClassTypes = ['CA_LauncherMagazine', 'ATMine_Range_Mag','SatchelCharge_Remote_Mag','ClaymoreDirectionalMine_Remote_Mag','rhssaf_tm100_mag','rhs_rpg26_mag','rhs_rpg75_mag'];	_WarheadList = ""901 in (getArray( _x >> 'allowedSlots'))"" configClasses (configFile >> 'CfgMagazines');		_WarheadList = _WarheadList apply {configName _x;}; 	_WarheadList deleteAt (_WarheadList find 'CA_LauncherMagazine');	{	_currentMag = _x;		{				if (_currentMag isKindOf [_x , configFile >> 'CfgMagazines']) then { 		_lbadd = _control lbadd gettext (configFile >> 'CfgMagazines' >> _currentMag >> 'displayname');	_control lbsetdata [_lbadd, _currentMag];	_control lbsetpicture [_lbadd,gettext (configFile >> 'CfgMagazines' >> _currentMag >> 'picture')];		};			} forEach _ClassTypes;		} forEach _WarheadList;"; 	
- 	
-
-
-
-
-
-//enableDebugConsole = 2; ///FOR TESTING ONLY DELETE OR COMMENT OUT AFTER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//onLoad ="_control = _this select 0; _ClassTypes = ['CA_LauncherMagazine', 'ATMine_Range_Mag','SatchelCharge_Remote_Mag','ClaymoreDirectionalMine_Remote_Mag','rhssaf_tm100_mag','rhs_rpg26_mag','rhs_rpg75_mag'];	_WarheadList = ""901 in (getArray( _x >> 'allowedSlots'))"" configClasses (configFile >> 'CfgMagazines');		_WarheadList = _WarheadList apply {configName _x;}; 	_WarheadList deleteAt (_WarheadList find 'CA_LauncherMagazine');	{	_currentMag = _x;		{				if (_currentMag isKindOf [_x , configFile >> 'CfgMagazines']) then { 		_lbadd = _control lbadd gettext (configFile >> 'CfgMagazines' >> _currentMag >> 'displayname');	_control lbsetdata [_lbadd, _currentMag];	_control lbsetpicture [_lbadd,gettext (configFile >> 'CfgMagazines' >> _currentMag >> 'picture')];		};			} forEach _ClassTypes;		} forEach _WarheadList;"; 	

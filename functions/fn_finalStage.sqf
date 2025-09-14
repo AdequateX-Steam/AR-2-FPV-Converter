@@ -12,7 +12,7 @@ _originalWarhead = _Warhead; //prepares a copy for replacement timetoLive bypass
 _droneObject addMagazineTurret ["FakeMagazine", [-1], 1];
 
 
-if ((_Warhead isKindOf "MissileBase") || (_Warhead isKindOf "RocketBase") || (_Warhead isKindOf "BombCore") || (_Warhead isKindOf "SubmunitionBase")) then  //bombCore for experimental zeus weapons
+if ((_Warhead isKindOf "MissileBase") || (_Warhead isKindOf "RocketBase") || (_Warhead isKindOf "BombCore") || (_Warhead isKindOf "SubmunitionBase")) then  //bombCore & SubmunitionBase for experimental zeus weapons
 {
 	_Warhead = "fpvAmmo"; //creates a special CfgAmmo type with a higher 'timetoLive' value to bypass auto detonation limits.
 	_warheadLocation = getPosATL _droneObject;
@@ -319,13 +319,3 @@ if (_dropped == False) then
 
 //return value
 true;			
-
-////old code
-
-/* 						_replacement = _x getVariable "altWarhead";
-						_offset = _x getVariable "altOffset";				
-						_newWarhead = _replacement createVehicle (getPosATL (_unit));
-						deleteVehicle _x;
-						_newWarhead attachto [(_unit), _offset];
-						triggerAmmo _newWarhead;	 
-*/
