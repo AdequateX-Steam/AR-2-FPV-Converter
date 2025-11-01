@@ -1,5 +1,5 @@
 params [["_droneObject", objNull, [objNull]]];
-
+//playerTargetLock
 if (!(_droneObject isNil "ExpMagazine")) exitWith {};  //conflicts with zeusArmDrone (uncessary?)
 if (_droneObject iskindof "fpv_Base_F") then { _droneObject setMass 275.000; };
 _droneObject setVariable ["ExpMagazine", ""];
@@ -30,9 +30,10 @@ _droneObject addAction ["<t color='#c7f08f'>Turbo Mode toggle</t>",
 			
 			if (((diag_frameNo mod 2) isEqualTo 0) && {(speed (_thisArgs select 0) > 35) && {(speed (_thisArgs select 0) < 190)}}) then 
 			{
-				_velX = (-cos (getDir (_thisArgs select 0) + 90));
-				_velY = ((sin (getDir (_thisArgs select 0) + 90)));
-				(_thisargs select 0) addForce [[(_velX * 75), (_velY * 75), 0], [0, 0, 0], false];	
+				//_velX = (-cos (getDir (_thisArgs select 0) + 90));
+				//_velY = ((sin (getDir (_thisArgs select 0) + 90)));
+				//(_thisargs select 0) addForce [[(_velX * 75), (_velY * 75), 0], [0, 0, 0], false];
+				(_thisargs select 0) addForce [(_thisargs select 0) vectorModelToWorld [0,42,0], [0, 0, 0], false];				
 			};
 		
 		},[_target]];

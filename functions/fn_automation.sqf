@@ -51,7 +51,7 @@ EXP_fnc_wayPointTraversal =
 		_target = [_droneObject, (getMarkerPos _droneMarker2)] call Exp_fnc_targetSearch;
 		deleteMarker _droneMarker1;
 		deleteMarker _droneMarker2;
-		if ((typeName _target) == "OBJECT") then 
+		if (_target isEqualType objNull) then     //((typeName _target) == "OBJECT")  ,,,, _target isEqualType objnull
 		{
 			[_droneObject, _target] spawn Exp_fnc_targetSeek;
 		}
@@ -75,7 +75,7 @@ Exp_fnc_targetSearch =
 // _marker = location drone was sent to search for targets
 params
 [
-	["_droneObject", objNull, [objnull]],
+	["_droneObject", objNull, [objNull]],
 	["_markerPOS", 0, []]
 ];
 	
@@ -96,7 +96,10 @@ params
 	_enemyList append (_markerPOS nearEntities [["Man", "CAR", "Wheeled_APC_F", "Tank"], _radius]);
 	_removeIndexes = [];
 	{
-		if ((side _x isEqualTo side _droneObject) || ((side _droneObject getFriend side _x) > 0.6) || ((typename _x) isNotEqualTo (typename objNull))) then {_removeIndexes append [_foreachindex];};
+		if ((side _x isEqualTo side _droneObject) || ((side _droneObject getFriend side _x) > 0.6) || (!(_x isEqualType objNull))) then   ///     ((typename _x) isNotEqualTo (typename objNull))
+		{
+			_removeIndexes append [_foreachindex];
+		};
 	}foreach _enemyList;	
 	if ((count _removeIndexes) > 0) then {_enemyList deleteat _removeIndexes;};
 
@@ -210,7 +213,7 @@ Exp_fnc_targetSeek =
 			removeMissionEventHandler ["EachFrame", _thisEventHandler];
 			_target = [(_thisArgs select 0), (getPosATL (_thisArgs select 0))] call Exp_fnc_targetSearch;
 			(_thisArgs select 0) setvariable ["EXP_accelTime", nil];
-			if ((typeName _target) == "OBJECT") then 
+			if (_target isEqualType objNull) then  // ((typeName _target) == "OBJECT")
 			{
 				[(_thisArgs select 0), _target] spawn Exp_fnc_targetSeek;	
 			}
@@ -222,14 +225,6 @@ Exp_fnc_targetSeek =
 		};
 			
 		////////////// HIGHER FREQUENCY TARGET POS CHECKS HERE ////////////////
-	/* //OLD CODE
-		_targetPos = 
-		[
-			(((getPosATL (_thisArgs select 1))select 0) + (-(cos (((getDir (_thisArgs select 1)) +90))) * ((_thisArgs select 4) select 1))), 
-			(((getPosATL (_thisArgs select 1))select 1) + ((sin (((getDir (_thisArgs select 1)) +90))) * ((_thisArgs select 4) select 1))), 
-			(((getPosATL (_thisArgs select 1))select 2) + (-((_thisArgs select 4) select 2)))
-		];	 
-	*/	
 		//_dTime = (diag_deltaTime);
 		_dronePos = (getPosATL (_thisArgs select 0));
 		_targetPos = unitAimPosition (_thisArgs select 1);
@@ -353,8 +348,7 @@ Exp_fnc_targetSeek =
 				]; 
 				(_thisArgs select 0) setvelocity _incVelocity;
 				//(_thisArgs select 0) addForce [_incVelocity, [0,0,0]];
-				//(_thisArgs select 0) addTorque  ((_thisArgs select 0) vectorModelToWorld [1000,0,0])
-				
+				//(_thisArgs select 0) addTorque  ((_thisArgs select 0) vectorModelToWorld [1000,0,0])			
 			};		
 		
 		}
@@ -377,7 +371,6 @@ Exp_fnc_targetSeek =
 					}; 
 								
 				} forEach attachedObjects (_thisArgs select 0);
-				//[] spawn Exp_fnc_removeHud;
 				(_thisArgs select 0) removeAllEventHandlers "Fired";
 				(_thisArgs select 0) removeAllEventHandlers "Hit";
 				(_thisArgs select 0) removeAllEventHandlers "Killed";

@@ -1087,7 +1087,7 @@ class CfgVehicles {
 		scopeCurator = 2;
 		curatorCanAttach = 0;	// 1 to allow Zeus to attach the module to an entity
 		curatorInfoType = "RscDisplayWarheadConfigurator";   //rsctitle display to open on place or double click (eg. "RscDisplayAttributesModuleObjectiveAttackDefend")
-		isGlobal = 0;	// 0 for server only execution, 1 for global execution, 2 for persistent global execution
+		isGlobal = 1;	// 0 for server only execution, 1 for global execution, 2 for persistent global execution
 		is3DEN = 1;		// 1 to run init function in Eden Editor as well
 		isDisposable = 0;					// 1 if modules is to be disabled once it is activated (i.e. repeated trigger activation will not work)
 		isTriggerActivated = 0;
@@ -1133,10 +1133,9 @@ class CfgVehicles {
 				property = "EXP_ModuleDefence_DroneCount";				
 				control = "DroneCount";
 				typeName = "NUMBER";
-				expression = "_this setVariable ['%s',_value,true];";
-				
-				value = "1.00"; //10
-				defaultValue = "1.00"; //10
+				expression = "_this setVariable ['%s',_value,true];";			
+				value = 1; //"1.00"
+				defaultValue = 1; //"1.00"
 			};
 			
 			class WarheadSelector 
